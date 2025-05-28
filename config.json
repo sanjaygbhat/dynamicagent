@@ -1,0 +1,69 @@
+{
+  "mcpServers": {
+    "gmail": {
+      "command": "npx",
+      "args": ["-y", "gmail-mcp-server"],
+      "env": {
+        "GMAIL_CREDENTIALS_PATH": "/path/to/gmail-credentials.json",
+        "GMAIL_TOKEN_PATH": "/path/to/gmail-token.json"
+      }
+    },
+    "google-drive": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-google-drive"],
+      "env": {
+        "GOOGLE_DRIVE_CREDENTIALS_PATH": "/path/to/google-drive-credentials.json",
+        "GOOGLE_DRIVE_TOKEN_PATH": "/path/to/google-drive-token.json"
+      }
+    },
+    "google-calendar": {
+      "command": "npx",
+      "args": ["-y", "google-calendar-mcp"],
+      "env": {
+        "GOOGLE_CALENDAR_CREDENTIALS_PATH": "/path/to/google-calendar-credentials.json",
+        "GOOGLE_CALENDAR_TOKEN_PATH": "/path/to/google-calendar-token.json"
+      }
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-your-slack-bot-token",
+        "SLACK_TEAM_ID": "your-slack-team-id"
+      }
+    },
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "notion-mcp-server"],
+      "env": {
+        "NOTION_API_KEY": "secret_your-notion-integration-token"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_your-github-personal-access-token"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/directory"]
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "your-brave-search-api-key"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    }
+  }
+} 

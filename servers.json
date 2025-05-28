@@ -1,0 +1,663 @@
+{
+  "servers": [
+    {
+      "name": "Gmail",
+      "description": "A Model Context Protocol (MCP) server for Gmail integration in Claude Desktop with auto authentication support. Enables seamless email management for Gmail, offering secure features like email search, reading, and sending.",
+      "tools": [
+        {
+          "name": "search_emails",
+          "description": "Search for emails in Gmail using various criteria",
+          "arguments": [
+            {
+              "name": "query",
+              "type": "string",
+              "required": true,
+              "description": "Gmail search query (e.g., 'from:example@gmail.com', 'subject:meeting', 'is:unread')"
+            },
+            {
+              "name": "max_results",
+              "type": "number",
+              "required": false,
+              "description": "Maximum number of emails to return (default: 10)"
+            }
+          ]
+        },
+        {
+          "name": "read_email",
+          "description": "Read the content of a specific email",
+          "arguments": [
+            {
+              "name": "email_id",
+              "type": "string",
+              "required": true,
+              "description": "The ID of the email to read"
+            }
+          ]
+        },
+        {
+          "name": "send_email",
+          "description": "Send a new email",
+          "arguments": [
+            {
+              "name": "to",
+              "type": "string",
+              "required": true,
+              "description": "Recipient email address"
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "required": true,
+              "description": "Email subject"
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "required": true,
+              "description": "Email body content"
+            },
+            {
+              "name": "cc",
+              "type": "string",
+              "required": false,
+              "description": "CC recipients (comma-separated)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Google Drive",
+      "description": "File access and search capabilities for Google Drive. Allows you to search, read, upload, and manage files in your Google Drive storage.",
+      "tools": [
+        {
+          "name": "search_files",
+          "description": "Search for files in Google Drive",
+          "arguments": [
+            {
+              "name": "query",
+              "type": "string",
+              "required": true,
+              "description": "Search query for files (e.g., 'name contains \"report\"', 'mimeType=\"application/pdf\"')"
+            },
+            {
+              "name": "max_results",
+              "type": "number",
+              "required": false,
+              "description": "Maximum number of files to return (default: 10)"
+            }
+          ]
+        },
+        {
+          "name": "read_file",
+          "description": "Read the content of a file from Google Drive",
+          "arguments": [
+            {
+              "name": "file_id",
+              "type": "string",
+              "required": true,
+              "description": "The ID of the file to read"
+            }
+          ]
+        },
+        {
+          "name": "upload_file",
+          "description": "Upload a file to Google Drive",
+          "arguments": [
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "description": "Name of the file"
+            },
+            {
+              "name": "content",
+              "type": "string",
+              "required": true,
+              "description": "File content"
+            },
+            {
+              "name": "parent_folder_id",
+              "type": "string",
+              "required": false,
+              "description": "ID of the parent folder (optional)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Google Calendar",
+      "description": "Integration with Google Calendar to check schedules, find time, and add/delete events. Manage your calendar events through natural language.",
+      "tools": [
+        {
+          "name": "list_events",
+          "description": "List upcoming calendar events",
+          "arguments": [
+            {
+              "name": "time_min",
+              "type": "string",
+              "required": false,
+              "description": "Start time for events (ISO format, default: now)"
+            },
+            {
+              "name": "time_max",
+              "type": "string",
+              "required": false,
+              "description": "End time for events (ISO format, default: 1 week from now)"
+            },
+            {
+              "name": "max_results",
+              "type": "number",
+              "required": false,
+              "description": "Maximum number of events to return (default: 10)"
+            }
+          ]
+        },
+        {
+          "name": "create_event",
+          "description": "Create a new calendar event",
+          "arguments": [
+            {
+              "name": "summary",
+              "type": "string",
+              "required": true,
+              "description": "Event title/summary"
+            },
+            {
+              "name": "start_time",
+              "type": "string",
+              "required": true,
+              "description": "Event start time (ISO format)"
+            },
+            {
+              "name": "end_time",
+              "type": "string",
+              "required": true,
+              "description": "Event end time (ISO format)"
+            },
+            {
+              "name": "description",
+              "type": "string",
+              "required": false,
+              "description": "Event description"
+            },
+            {
+              "name": "location",
+              "type": "string",
+              "required": false,
+              "description": "Event location"
+            }
+          ]
+        },
+        {
+          "name": "delete_event",
+          "description": "Delete a calendar event",
+          "arguments": [
+            {
+              "name": "event_id",
+              "type": "string",
+              "required": true,
+              "description": "ID of the event to delete"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Slack",
+      "description": "Channel management and messaging capabilities for Slack. Send messages, read conversations, and manage your Slack workspace.",
+      "tools": [
+        {
+          "name": "send_message",
+          "description": "Send a message to a Slack channel or user",
+          "arguments": [
+            {
+              "name": "channel",
+              "type": "string",
+              "required": true,
+              "description": "Channel name (e.g., '#general') or user ID"
+            },
+            {
+              "name": "text",
+              "type": "string",
+              "required": true,
+              "description": "Message text to send"
+            }
+          ]
+        },
+        {
+          "name": "read_messages",
+          "description": "Read recent messages from a Slack channel",
+          "arguments": [
+            {
+              "name": "channel",
+              "type": "string",
+              "required": true,
+              "description": "Channel name (e.g., '#general')"
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "required": false,
+              "description": "Number of messages to retrieve (default: 10)"
+            }
+          ]
+        },
+        {
+          "name": "list_channels",
+          "description": "List available Slack channels",
+          "arguments": []
+        }
+      ]
+    },
+    {
+      "name": "Notion",
+      "description": "Interact with Notion API. Search, Read, Update, and Create pages through Claude chat. Manage your Notion workspace content.",
+      "tools": [
+        {
+          "name": "search_pages",
+          "description": "Search for pages in Notion",
+          "arguments": [
+            {
+              "name": "query",
+              "type": "string",
+              "required": true,
+              "description": "Search query for pages"
+            }
+          ]
+        },
+        {
+          "name": "read_page",
+          "description": "Read the content of a Notion page",
+          "arguments": [
+            {
+              "name": "page_id",
+              "type": "string",
+              "required": true,
+              "description": "ID of the page to read"
+            }
+          ]
+        },
+        {
+          "name": "create_page",
+          "description": "Create a new Notion page",
+          "arguments": [
+            {
+              "name": "title",
+              "type": "string",
+              "required": true,
+              "description": "Page title"
+            },
+            {
+              "name": "content",
+              "type": "string",
+              "required": true,
+              "description": "Page content in markdown format"
+            },
+            {
+              "name": "parent_id",
+              "type": "string",
+              "required": false,
+              "description": "Parent page or database ID"
+            }
+          ]
+        },
+        {
+          "name": "update_page",
+          "description": "Update an existing Notion page",
+          "arguments": [
+            {
+              "name": "page_id",
+              "type": "string",
+              "required": true,
+              "description": "ID of the page to update"
+            },
+            {
+              "name": "content",
+              "type": "string",
+              "required": true,
+              "description": "New content for the page"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GitHub",
+      "description": "Repository management, file operations, and GitHub API integration. Manage your GitHub repositories, issues, and pull requests.",
+      "tools": [
+        {
+          "name": "list_repositories",
+          "description": "List GitHub repositories",
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "string",
+              "required": false,
+              "description": "Repository owner (defaults to authenticated user)"
+            },
+            {
+              "name": "type",
+              "type": "string",
+              "required": false,
+              "description": "Repository type: 'all', 'owner', 'public', 'private' (default: 'all')"
+            }
+          ]
+        },
+        {
+          "name": "read_file",
+          "description": "Read a file from a GitHub repository",
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "string",
+              "required": true,
+              "description": "Repository owner"
+            },
+            {
+              "name": "repo",
+              "type": "string",
+              "required": true,
+              "description": "Repository name"
+            },
+            {
+              "name": "path",
+              "type": "string",
+              "required": true,
+              "description": "File path in the repository"
+            },
+            {
+              "name": "branch",
+              "type": "string",
+              "required": false,
+              "description": "Branch name (default: main)"
+            }
+          ]
+        },
+        {
+          "name": "create_issue",
+          "description": "Create a new GitHub issue",
+          "arguments": [
+            {
+              "name": "owner",
+              "type": "string",
+              "required": true,
+              "description": "Repository owner"
+            },
+            {
+              "name": "repo",
+              "type": "string",
+              "required": true,
+              "description": "Repository name"
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "required": true,
+              "description": "Issue title"
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "required": false,
+              "description": "Issue description"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Filesystem",
+      "description": "Secure file operations with configurable access controls. Read, write, and manage files on your local filesystem.",
+      "tools": [
+        {
+          "name": "read_file",
+          "description": "Read the contents of a file",
+          "arguments": [
+            {
+              "name": "path",
+              "type": "string",
+              "required": true,
+              "description": "Path to the file to read"
+            }
+          ]
+        },
+        {
+          "name": "write_file",
+          "description": "Write content to a file",
+          "arguments": [
+            {
+              "name": "path",
+              "type": "string",
+              "required": true,
+              "description": "Path to the file to write"
+            },
+            {
+              "name": "content",
+              "type": "string",
+              "required": true,
+              "description": "Content to write to the file"
+            }
+          ]
+        },
+        {
+          "name": "list_directory",
+          "description": "List the contents of a directory",
+          "arguments": [
+            {
+              "name": "path",
+              "type": "string",
+              "required": true,
+              "description": "Path to the directory to list"
+            }
+          ]
+        },
+        {
+          "name": "create_directory",
+          "description": "Create a new directory",
+          "arguments": [
+            {
+              "name": "path",
+              "type": "string",
+              "required": true,
+              "description": "Path to the directory to create"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Puppeteer",
+      "description": "Browser automation and web scraping capabilities. Navigate websites, take screenshots, fill forms, and interact with web pages.",
+      "tools": [
+        {
+          "name": "navigate",
+          "description": "Navigate to a URL in the browser",
+          "arguments": [
+            {
+              "name": "url",
+              "type": "string",
+              "required": true,
+              "description": "URL to navigate to"
+            }
+          ]
+        },
+        {
+          "name": "screenshot",
+          "description": "Take a screenshot of the current page or element",
+          "arguments": [
+            {
+              "name": "name",
+              "type": "string",
+              "required": true,
+              "description": "Name for the screenshot"
+            },
+            {
+              "name": "selector",
+              "type": "string",
+              "required": false,
+              "description": "CSS selector for element to screenshot (optional)"
+            },
+            {
+              "name": "width",
+              "type": "number",
+              "required": false,
+              "description": "Screenshot width (default: 800)"
+            },
+            {
+              "name": "height",
+              "type": "number",
+              "required": false,
+              "description": "Screenshot height (default: 600)"
+            }
+          ]
+        },
+        {
+          "name": "click",
+          "description": "Click an element on the page",
+          "arguments": [
+            {
+              "name": "selector",
+              "type": "string",
+              "required": true,
+              "description": "CSS selector for element to click"
+            }
+          ]
+        },
+        {
+          "name": "fill",
+          "description": "Fill out an input field",
+          "arguments": [
+            {
+              "name": "selector",
+              "type": "string",
+              "required": true,
+              "description": "CSS selector for input field"
+            },
+            {
+              "name": "value",
+              "type": "string",
+              "required": true,
+              "description": "Value to fill in the field"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Brave Search",
+      "description": "Web and local search using Brave's Search API. Search the web for current information and get relevant results.",
+      "tools": [
+        {
+          "name": "web_search",
+          "description": "Search the web using Brave Search",
+          "arguments": [
+            {
+              "name": "query",
+              "type": "string",
+              "required": true,
+              "description": "Search query"
+            },
+            {
+              "name": "count",
+              "type": "number",
+              "required": false,
+              "description": "Number of results to return (default: 10)"
+            },
+            {
+              "name": "country",
+              "type": "string",
+              "required": false,
+              "description": "Country code for localized results (e.g., 'US', 'GB')"
+            }
+          ]
+        },
+        {
+          "name": "news_search",
+          "description": "Search for news articles",
+          "arguments": [
+            {
+              "name": "query",
+              "type": "string",
+              "required": true,
+              "description": "News search query"
+            },
+            {
+              "name": "count",
+              "type": "number",
+              "required": false,
+              "description": "Number of news results to return (default: 10)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Memory",
+      "description": "Knowledge graph-based persistent memory system. Store and retrieve information across conversations to maintain context and continuity.",
+      "tools": [
+        {
+          "name": "store_memory",
+          "description": "Store information in memory",
+          "arguments": [
+            {
+              "name": "key",
+              "type": "string",
+              "required": true,
+              "description": "Key to store the information under"
+            },
+            {
+              "name": "value",
+              "type": "string",
+              "required": true,
+              "description": "Information to store"
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "required": false,
+              "description": "Category for organizing memories"
+            }
+          ]
+        },
+        {
+          "name": "retrieve_memory",
+          "description": "Retrieve information from memory",
+          "arguments": [
+            {
+              "name": "key",
+              "type": "string",
+              "required": false,
+              "description": "Specific key to retrieve (optional)"
+            },
+            {
+              "name": "query",
+              "type": "string",
+              "required": false,
+              "description": "Search query for memories"
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "required": false,
+              "description": "Category to search within"
+            }
+          ]
+        },
+        {
+          "name": "list_memories",
+          "description": "List all stored memories",
+          "arguments": [
+            {
+              "name": "category",
+              "type": "string",
+              "required": false,
+              "description": "Filter by category (optional)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 

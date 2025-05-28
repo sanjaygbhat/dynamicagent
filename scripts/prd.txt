@@ -1,0 +1,98 @@
+# MVP Dynamic MCP Agent API - Product Requirements Document
+
+## Overview
+Build a Python FastAPI backend that analyzes user workflow requests, identifies required MCP servers, collects credentials, and creates configured agents using fast-agent framework.
+
+## Core Requirements
+
+### 1. Database Schema (Supabase)
+- Enable vector extension for semantic search
+- Users table managed by Supabase Auth
+- Sessions table with user association and context storage
+- Chat messages table for conversation history
+- MCP servers table with embeddings for semantic search
+- Vector search function for finding relevant MCP servers
+- Row Level Security (RLS) policies for data isolation
+
+### 2. Authentication System
+- Google OAuth integration via Supabase Auth
+- JWT token verification for API endpoints
+- User session management
+- Secure credential storage per user
+
+### 3. Core API Endpoints
+- POST /api/auth/google - Exchange Google OAuth token for Supabase session
+- POST /api/chat - Main chat endpoint for workflow analysis
+- GET /api/chat/history - Retrieve user's chat history with pagination
+- GET /api/sessions/{session_id}/messages - Get all messages for specific session
+- GET / - Health check endpoint
+
+### 4. Workflow Analysis Engine
+- Use Claude AI to analyze user workflow requests
+- Identify required MCP servers from available database
+- Extract workflow steps and requirements
+- Generate natural language responses
+
+### 5. Credential Management
+- Collect required credentials for identified MCP servers
+- Store credentials securely in session context
+- Validate credential completeness before agent creation
+- Provide clear instructions for missing credentials
+
+### 6. Agent Configuration
+- Generate MCP server configurations with user credentials
+- Create agent config compatible with fast-agent framework
+- Support multiple MCP servers per agent
+- Clean configuration key generation
+
+### 7. Data Management
+- Load MCP server data from JSON configuration files
+- Generate embeddings for semantic search
+- Upsert server information to database
+- Maintain server metadata and credential requirements
+
+## Technical Stack
+- FastAPI for REST API
+- Supabase for database and authentication
+- OpenAI for embeddings generation
+- Anthropic Claude for workflow analysis
+- Python with async/await patterns
+- CORS middleware for frontend integration
+
+## Security Requirements
+- JWT token authentication on all protected endpoints
+- Row Level Security in database
+- Secure credential storage
+- Input validation and sanitization
+- HTTPS in production
+
+## Performance Requirements
+- Sub-second response times for chat endpoints
+- Efficient vector search for MCP server matching
+- Pagination for chat history
+- Async processing for database operations
+
+## Integration Requirements
+- Google OAuth provider setup in Supabase
+- Frontend JavaScript client integration
+- MCP server configuration compatibility
+- Fast-agent framework integration
+
+## Data Requirements
+- Support for 50+ MCP servers initially
+- Conversation history retention
+- Session context persistence
+- Credential information templates
+
+## Deployment Requirements
+- Environment variable configuration
+- Docker containerization support
+- Production-ready logging
+- Health check endpoints
+
+## Success Metrics
+- Successful user authentication flow
+- Accurate MCP server identification (>90%)
+- Complete credential collection workflow
+- Successful agent configuration generation
+- Chat history persistence and retrieval 

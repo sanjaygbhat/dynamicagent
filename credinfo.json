@@ -1,0 +1,228 @@
+{
+  "credential_instructions": {
+    "gmail": {
+      "description": "Gmail MCP Server requires Google OAuth2 credentials to access your Gmail account",
+      "steps": [
+        "1. Go to the Google Cloud Console (https://console.cloud.google.com/)",
+        "2. Create a new project or select an existing one",
+        "3. Enable the Gmail API for your project",
+        "4. Go to 'Credentials' and create OAuth 2.0 Client IDs",
+        "5. Download the credentials JSON file and save it as 'gmail-credentials.json'",
+        "6. Run the server once to generate the token file through OAuth flow",
+        "7. Update the paths in your config to point to these files"
+      ],
+      "required_files": [
+        "gmail-credentials.json (OAuth2 client credentials)",
+        "gmail-token.json (Generated after first OAuth flow)"
+      ],
+      "permissions_needed": [
+        "Gmail API read/write access",
+        "Google account authentication"
+      ]
+    },
+    "google-drive": {
+      "description": "Google Drive MCP Server requires Google OAuth2 credentials to access your Drive files",
+      "steps": [
+        "1. Go to the Google Cloud Console (https://console.cloud.google.com/)",
+        "2. Create a new project or select an existing one",
+        "3. Enable the Google Drive API for your project",
+        "4. Go to 'Credentials' and create OAuth 2.0 Client IDs",
+        "5. Download the credentials JSON file and save it as 'google-drive-credentials.json'",
+        "6. Run the server once to generate the token file through OAuth flow",
+        "7. Update the paths in your config to point to these files"
+      ],
+      "required_files": [
+        "google-drive-credentials.json (OAuth2 client credentials)",
+        "google-drive-token.json (Generated after first OAuth flow)"
+      ],
+      "permissions_needed": [
+        "Google Drive API read/write access",
+        "Google account authentication"
+      ]
+    },
+    "google-calendar": {
+      "description": "Google Calendar MCP Server requires Google OAuth2 credentials to manage your calendar",
+      "steps": [
+        "1. Go to the Google Cloud Console (https://console.cloud.google.com/)",
+        "2. Create a new project or select an existing one",
+        "3. Enable the Google Calendar API for your project",
+        "4. Go to 'Credentials' and create OAuth 2.0 Client IDs",
+        "5. Download the credentials JSON file and save it as 'google-calendar-credentials.json'",
+        "6. Run the server once to generate the token file through OAuth flow",
+        "7. Update the paths in your config to point to these files"
+      ],
+      "required_files": [
+        "google-calendar-credentials.json (OAuth2 client credentials)",
+        "google-calendar-token.json (Generated after first OAuth flow)"
+      ],
+      "permissions_needed": [
+        "Google Calendar API read/write access",
+        "Google account authentication"
+      ]
+    },
+    "slack": {
+      "description": "Slack MCP Server requires a Slack Bot Token to interact with your workspace",
+      "steps": [
+        "1. Go to https://api.slack.com/apps",
+        "2. Click 'Create New App' and choose 'From scratch'",
+        "3. Give your app a name and select your workspace",
+        "4. Go to 'OAuth & Permissions' in the sidebar",
+        "5. Add the following Bot Token Scopes:",
+        "   - channels:read (to list channels)",
+        "   - chat:write (to send messages)",
+        "   - chat:write.public (to send messages to public channels)",
+        "   - im:read (to read direct messages)",
+        "   - im:write (to send direct messages)",
+        "   - users:read (to get user information)",
+        "6. Install the app to your workspace",
+        "7. Copy the 'Bot User OAuth Token' (starts with xoxb-)",
+        "8. Find your Team ID in Slack: Settings & administration > Workspace settings"
+      ],
+      "required_tokens": [
+        "SLACK_BOT_TOKEN: Bot User OAuth Token (xoxb-...)",
+        "SLACK_TEAM_ID: Your Slack workspace Team ID"
+      ],
+      "permissions_needed": [
+        "Bot token scopes for reading and writing messages",
+        "Workspace installation permissions"
+      ]
+    },
+    "notion": {
+      "description": "Notion MCP Server requires a Notion Integration Token to access your workspace",
+      "steps": [
+        "1. Go to https://www.notion.so/my-integrations",
+        "2. Click 'New integration'",
+        "3. Give your integration a name and select your workspace",
+        "4. Choose the capabilities you need (Read content, Update content, Insert content)",
+        "5. Click 'Submit' to create the integration",
+        "6. Copy the 'Internal Integration Token' (starts with secret_)",
+        "7. Go to the Notion pages you want to access",
+        "8. Click 'Share' and invite your integration to each page"
+      ],
+      "required_tokens": [
+        "NOTION_API_KEY: Internal Integration Token (secret_...)"
+      ],
+      "permissions_needed": [
+        "Integration must be invited to specific Notion pages",
+        "Read/write permissions as configured in integration settings"
+      ]
+    },
+    "github": {
+      "description": "GitHub MCP Server requires a Personal Access Token to access your repositories",
+      "steps": [
+        "1. Go to GitHub Settings: https://github.com/settings/tokens",
+        "2. Click 'Generate new token' > 'Generate new token (classic)'",
+        "3. Give your token a descriptive name",
+        "4. Select the scopes you need:",
+        "   - repo (for private repositories)",
+        "   - public_repo (for public repositories)",
+        "   - read:user (to read user information)",
+        "   - user:email (to read email addresses)",
+        "5. Click 'Generate token'",
+        "6. Copy the token immediately (it won't be shown again)",
+        "7. Store it securely and use it as GITHUB_PERSONAL_ACCESS_TOKEN"
+      ],
+      "required_tokens": [
+        "GITHUB_PERSONAL_ACCESS_TOKEN: Classic Personal Access Token (ghp_...)"
+      ],
+      "permissions_needed": [
+        "Repository access (public or private as needed)",
+        "User information access"
+      ]
+    },
+    "filesystem": {
+      "description": "Filesystem MCP Server requires specifying allowed directories for security",
+      "steps": [
+        "1. Choose the directory you want to allow access to",
+        "2. Use the full absolute path to the directory",
+        "3. The server will only allow operations within this directory and its subdirectories",
+        "4. For security, avoid using root directories like '/' or 'C:\\'",
+        "5. Example good paths: '/Users/username/Documents', '/home/user/projects'"
+      ],
+      "required_configuration": [
+        "Absolute path to allowed directory as command argument"
+      ],
+      "security_notes": [
+        "Only files within the specified directory can be accessed",
+        "Use specific directories rather than broad system paths",
+        "The server enforces path restrictions for security"
+      ]
+    },
+    "puppeteer": {
+      "description": "Puppeteer MCP Server runs browser automation and requires no additional credentials",
+      "steps": [
+        "1. No API keys or tokens required",
+        "2. The server will automatically download and use Chromium",
+        "3. Ensure you have sufficient disk space for Chromium download",
+        "4. The server can run in headless or headed mode",
+        "5. For Docker usage, it runs in headless mode automatically"
+      ],
+      "required_tokens": [
+        "None - no credentials required"
+      ],
+      "system_requirements": [
+        "Node.js environment",
+        "Sufficient disk space for Chromium",
+        "Network access for downloading browser if needed"
+      ]
+    },
+    "brave-search": {
+      "description": "Brave Search MCP Server requires a Brave Search API key",
+      "steps": [
+        "1. Go to https://api.search.brave.com/",
+        "2. Sign up for a Brave Search API account",
+        "3. Choose a pricing plan (free tier available)",
+        "4. Go to your dashboard and create a new API key",
+        "5. Copy the API key",
+        "6. Use it as BRAVE_API_KEY in your configuration"
+      ],
+      "required_tokens": [
+        "BRAVE_API_KEY: Your Brave Search API key"
+      ],
+      "pricing_info": [
+        "Free tier available with limited requests",
+        "Paid plans for higher usage limits",
+        "Check current pricing at https://api.search.brave.com/"
+      ]
+    },
+    "memory": {
+      "description": "Memory MCP Server provides persistent memory and requires no additional credentials",
+      "steps": [
+        "1. No API keys or tokens required",
+        "2. The server stores data locally in a knowledge graph format",
+        "3. Data persists between sessions automatically",
+        "4. Memory is stored in the server's working directory",
+        "5. No external services or authentication needed"
+      ],
+      "required_tokens": [
+        "None - no credentials required"
+      ],
+      "storage_info": [
+        "Data stored locally on your machine",
+        "Persistent across server restarts",
+        "No cloud storage or external dependencies"
+      ]
+    }
+  },
+  "general_setup_notes": {
+    "claude_desktop_config_location": {
+      "macos": "~/Library/Application Support/Claude/claude_desktop_config.json",
+      "windows": "%APPDATA%\\Claude\\claude_desktop_config.json",
+      "linux": "~/.config/Claude/claude_desktop_config.json"
+    },
+    "important_reminders": [
+      "Always use absolute paths for file locations",
+      "Restart Claude Desktop after changing configuration",
+      "Keep API keys and tokens secure and never share them",
+      "Some servers may require additional npm package installations",
+      "Test each server individually to ensure proper setup"
+    ],
+    "troubleshooting": [
+      "Check Claude Desktop logs if servers don't appear",
+      "Verify all file paths exist and are accessible",
+      "Ensure API keys have the correct permissions",
+      "Try running servers manually to test functionality",
+      "Check network connectivity for API-based servers"
+    ]
+  }
+} 
