@@ -202,6 +202,42 @@
         "Persistent across server restarts",
         "No cloud storage or external dependencies"
       ]
+    },
+    "supabase": {
+      "description": "Supabase MCP Server requires your Supabase project URL and anonymous key",
+      "steps": [
+        "1. Go to your Supabase project dashboard (https://app.supabase.com/)",
+        "2. Select your project or create a new one",
+        "3. Go to Settings > API in the sidebar",
+        "4. Copy your Project URL (e.g., https://your-project.supabase.co)",
+        "5. Copy your anon/public API key (safe for client-side use)",
+        "6. Use these values as SUPABASE_URL and SUPABASE_ANON_KEY"
+      ],
+      "required_tokens": [
+        "SUPABASE_URL: Your Supabase project URL",
+        "SUPABASE_ANON_KEY: Your anonymous/public API key"
+      ],
+      "security_notes": [
+        "The anon key is safe for client-side use",
+        "Never expose your service_role key",
+        "Configure Row Level Security (RLS) for data protection"
+      ]
+    },
+    "context7": {
+      "description": "Context7 MCP Server provides access to up-to-date library documentation and requires no credentials",
+      "steps": [
+        "1. No API keys or tokens required",
+        "2. The server connects to Context7's public API",
+        "3. Simply install and use - no configuration needed"
+      ],
+      "required_tokens": [
+        "None - no credentials required"
+      ],
+      "features": [
+        "Access to documentation for popular libraries",
+        "Code examples and API references",
+        "Up-to-date information from official sources"
+      ]
     }
   },
   "general_setup_notes": {
