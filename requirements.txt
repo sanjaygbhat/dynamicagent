@@ -1,0 +1,38 @@
+# Web framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# Database
+supabase>=2.0.0
+
+# AI/ML dependencies
+anthropic>=0.52.0
+fast-agent-mcp>=0.2.0
+openai>=1.63.2
+
+# HTTP client (compatible with anthropic)
+httpx>=0.25.0
+
+# Authentication
+python-jose[cryptography]
+python-multipart
+
+# Configuration
+PyYAML>=6.0
+python-dotenv
+
+# Utilities
+requests
+uuid
+
+# Additional dependencies for embeddings and vector operations
+numpy>=1.24.0
+psycopg2-binary>=2.9.0
+asyncpg>=0.29.0
+sqlalchemy==2.0.23
+alembic==1.13.0
+
+# Testing dependencies
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+passlib[bcrypt]>=1.7.0 

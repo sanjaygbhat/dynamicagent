@@ -1,6 +1,92 @@
 {
   "servers": [
     {
+      "id": "supabase",
+      "name": "Supabase MCP",
+      "type": "database",
+      "description": "Supabase MCP server for database operations, authentication, and real-time subscriptions. Provides tools for managing projects, executing SQL, handling auth, and more.",
+      "command": "npx",
+      "args": ["@supabase/mcp-server"],
+      "tools": [
+        "list_projects",
+        "get_project",
+        "create_project",
+        "execute_sql",
+        "list_tables",
+        "get_project_url",
+        "get_anon_key"
+      ]
+    },
+    {
+      "id": "context7",
+      "name": "Context7 MCP",
+      "type": "documentation",
+      "description": "Context7 MCP server for accessing up-to-date library documentation and code examples. Helps with finding relevant documentation for popular libraries and frameworks.",
+      "command": "npx",
+      "args": ["@context7/mcp-server"],
+      "tools": [
+        "resolve-library-id",
+        "get-library-docs"
+      ]
+    },
+    {
+      "id": "github",
+      "name": "GitHub MCP",
+      "type": "version_control",
+      "description": "GitHub MCP server for repository management, issue tracking, pull requests, and code collaboration. Provides comprehensive GitHub API access.",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-github"],
+      "tools": [
+        "create_repository",
+        "get_repository",
+        "list_repositories",
+        "create_issue",
+        "list_issues",
+        "create_pull_request"
+      ]
+    },
+    {
+      "id": "filesystem",
+      "name": "Filesystem MCP",
+      "type": "file_management",
+      "description": "Filesystem MCP server for file and directory operations. Provides secure file system access with read, write, and directory management capabilities.",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-filesystem"],
+      "tools": [
+        "read_file",
+        "write_file",
+        "create_directory",
+        "list_directory",
+        "delete_file"
+      ]
+    },
+    {
+      "id": "web_search",
+      "name": "Web Search MCP",
+      "type": "search",
+      "description": "Web search MCP server for real-time web search capabilities. Provides access to current information and search results from the web.",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-brave-search"],
+      "tools": [
+        "web_search",
+        "search_results"
+      ]
+    },
+    {
+      "id": "slack",
+      "name": "Slack MCP",
+      "type": "communication",
+      "description": "Slack MCP server for team communication and collaboration. Provides tools for sending messages, managing channels, and interacting with Slack workspaces.",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-slack"],
+      "tools": [
+        "send_message",
+        "list_channels",
+        "get_channel_history",
+        "create_channel"
+      ]
+    },
+    {
       "name": "Gmail",
       "description": "A Model Context Protocol (MCP) server for Gmail integration in Claude Desktop with auto authentication support. Enables seamless email management for Gmail, offering secure features like email search, reading, and sending.",
       "tools": [
