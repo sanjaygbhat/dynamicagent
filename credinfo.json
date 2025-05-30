@@ -21,23 +21,43 @@
       ]
     },
     "google-drive": {
-      "description": "Google Drive MCP Server requires Google OAuth2 credentials to access your Drive files",
+      "description": "Official Google Drive MCP Server from modelcontextprotocol requires Google Cloud OAuth2 credentials to access your Drive files with read-only permissions",
       "steps": [
-        "1. Go to the Google Cloud Console (https://console.cloud.google.com/)",
-        "2. Create a new project or select an existing one",
-        "3. Enable the Google Drive API for your project",
-        "4. Go to 'Credentials' and create OAuth 2.0 Client IDs",
-        "5. Download the credentials JSON file and save it as 'google-drive-credentials.json'",
-        "6. Run the server once to generate the token file through OAuth flow",
-        "7. Update the paths in your config to point to these files"
+        "1. Create a new Google Cloud project at https://console.cloud.google.com/",
+        "2. Enable the Google Drive API for your project",
+        "3. Configure an OAuth consent screen ('internal' is fine for testing)",
+        "4. Add OAuth scope: https://www.googleapis.com/auth/drive.readonly",
+        "5. Create an OAuth Client ID for application type 'Desktop App'",
+        "6. Download the JSON file of your client's OAuth keys",
+        "7. Rename the key file to 'gcp-oauth.keys.json' and place it in a secure location",
+        "8. Run authentication: npx @modelcontextprotocol/server-gdrive auth",
+        "9. Complete the OAuth flow in your browser",
+        "10. Credentials will be saved as '.gdrive-server-credentials.json'"
       ],
       "required_files": [
-        "google-drive-credentials.json (OAuth2 client credentials)",
-        "google-drive-token.json (Generated after first OAuth flow)"
+        "gcp-oauth.keys.json (OAuth2 client credentials from Google Cloud Console)",
+        ".gdrive-server-credentials.json (Generated after OAuth authentication flow)"
+      ],
+      "environment_variables": [
+        "GDRIVE_OAUTH_PATH: Path to gcp-oauth.keys.json file",
+        "GDRIVE_CREDENTIALS_PATH: Path to .gdrive-server-credentials.json file"
       ],
       "permissions_needed": [
-        "Google Drive API read/write access",
+        "Google Drive API read-only access (https://www.googleapis.com/auth/drive.readonly)",
         "Google account authentication"
+      ],
+      "authentication_flow": [
+        "Run 'npx @modelcontextprotocol/server-gdrive auth' to start OAuth flow",
+        "Browser will open for Google account authorization",
+        "Grant read-only access to Google Drive",
+        "Credentials will be automatically saved for future use"
+      ],
+      "supported_file_types": [
+        "Google Docs (exported as Markdown)",
+        "Google Sheets (exported as CSV)",
+        "Google Presentations (exported as Plain text)",
+        "Google Drawings (exported as PNG)",
+        "All other files in native format"
       ]
     },
     "google-calendar": {

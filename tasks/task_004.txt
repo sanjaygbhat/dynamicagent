@@ -1,0 +1,96 @@
+# Task ID: 4
+# Title: Implement Google OAuth Authentication
+# Status: done
+# Dependencies: 3
+# Priority: high
+# Description: Integrate Google OAuth via Supabase Auth, implement a simple token exchange endpoint, and create authentication dependencies for FastAPI endpoints.
+# Details:
+For MVP, focus on these core components:
+
+1. Enable Google OAuth provider in Supabase dashboard
+2. Implement simple POST /api/auth/google endpoint in main.py
+3. Use Supabase client to exchange Google OAuth token for Supabase session
+4. Return JWT token to client
+5. Create get_current_user dependency function to verify Supabase tokens
+6. Test with a protected endpoint
+
+Code snippets:
+
+```python
+# Token exchange endpoint
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from supabase import create_client, Client
+from pydantic import BaseModel
+import os
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+class GoogleAuthRequest(BaseModel):
+    token: str
+
+@app.post("/api/auth/google")
+async def google_auth(request: GoogleAuthRequest):
+    try:
+        response = supabase.auth.sign_in_with_idp({
+            "provider": "google",
+            "access_token": request.token,
+        })
+        return {"access_token": response.session.access_token}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Authentication dependency
+security = HTTPBearer()
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        # Verify the token with Supabase
+        user = supabase.auth.get_user(credentials.credentials)
+        return user.user
+    except Exception as e:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+# Example of protected endpoint
+@app.get("/api/protected-resource")
+async def get_protected_resource(user = Depends(get_current_user)):
+    return {"message": "This is protected", "user_id": user.id}
+```
+
+# Test Strategy:
+1. Test the Google OAuth flow with a simple end-to-end test
+2. Verify token exchange with a valid Google token
+3. Test the get_current_user dependency with a valid token
+4. Verify access to the protected endpoint works with authentication
+
+# Subtasks:
+## 4.1. Enable Google OAuth in Supabase dashboard [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 4.2. Implement simple /api/auth/google endpoint [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 4.3. Create get_current_user dependency function [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 4.4. Test with a protected endpoint [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+

@@ -1,0 +1,93 @@
+# Task ID: 7
+# Title: Implement Chat History Retrieval
+# Status: done
+# Dependencies: 6
+# Priority: medium
+# Description: Create a simplified endpoint to retrieve user's chat history with basic pagination for MVP.
+# Details:
+1. Implement GET /api/chat/history endpoint with basic pagination
+2. Use limit and offset parameters for pagination
+3. Return user's chat sessions with their messages
+4. Use Supabase queries for efficient data retrieval
+
+Code snippet:
+```python
+from fastapi import Depends, Query
+
+@app.get("/api/chat/history")
+async def get_chat_history(
+    user = Depends(get_current_user), 
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0)
+):
+    # Get chat sessions with messages from Supabase with pagination
+    response = supabase.table("chat_sessions") \
+        .select("*, chat_messages(*)")\
+        .eq("user_id", user.id) \
+        .order("updated_at", desc=True) \
+        .limit(limit) \
+        .offset(offset) \
+        .execute()
+    
+    # Get total count for pagination metadata
+    count_response = supabase.table("chat_sessions") \
+        .select("id", count="exact") \
+        .eq("user_id", user.id) \
+        .execute()
+    
+    total = count_response.count
+    
+    return {
+        "sessions": response.data,
+        "total": total,
+        "limit": limit,
+        "offset": offset
+    }
+```
+
+# Test Strategy:
+1. Test basic pagination functionality with various limit and offset values
+2. Verify that only the authenticated user's sessions and messages are returned
+3. Ensure correct ordering of sessions (newest first)
+4. Verify that all messages for each session are included in the response
+5. Test error handling for invalid pagination parameters
+
+# Subtasks:
+## 1. Create chat history endpoint [done]
+### Dependencies: None
+### Description: Implement GET /api/chat/history with authentication
+### Details:
+Create endpoint:
+@app.get("/api/chat/history")
+async def get_chat_history(
+    user = Depends(get_current_user),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0)
+):
+
+## 2. Query sessions with messages [done]
+### Dependencies: 7.1
+### Description: Fetch user's sessions and messages from Supabase
+### Details:
+Query data:
+response = supabase.table("sessions") \
+    .select("*, chat_messages(*)") \
+    .eq("user_id", user.id) \
+    .order("created_at", desc=True) \
+    .range(offset, offset + limit - 1) \
+    .execute()
+
+## 3. Return paginated response [done]
+### Dependencies: 7.2
+### Description: Format and return the response with pagination metadata
+### Details:
+Return formatted response:
+return {
+    "sessions": response.data,
+    "pagination": {
+        "limit": limit,
+        "offset": offset,
+        "total": total_count
+    }
+}
+

@@ -1,0 +1,45 @@
+# Task ID: 3
+# Title: Set Up Supabase Integration
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Integrate Supabase for database and authentication by setting up the required tables and initializing the client.
+# Details:
+For MVP, focus on these essential steps:
+
+1. Create a Supabase project
+2. Run the provided SQL schema from the specification document to create all necessary tables
+3. Initialize the Supabase client in main.py
+
+No need to implement complex migrations or separate files for the MVP version. The SQL schema in the specification document contains all the necessary table definitions and extensions.
+
+# Test Strategy:
+1. Verify Supabase connection from the application
+2. Confirm all tables from the schema were created successfully
+3. Test basic database operations (insert/select) through the initialized client
+
+# Subtasks:
+## 3.1. Create Supabase project [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3.2. Run SQL schema from specification document [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3.3. Initialize Supabase client in main.py [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3.4. Test basic database connectivity [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+

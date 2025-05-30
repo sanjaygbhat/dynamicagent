@@ -22,10 +22,10 @@
     },
     "google-drive": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-google-drive"],
+      "args": ["-y", "@modelcontextprotocol/server-gdrive"],
       "env": {
-        "GOOGLE_DRIVE_CREDENTIALS_PATH": "/path/to/google-drive-credentials.json",
-        "GOOGLE_DRIVE_TOKEN_PATH": "/path/to/google-drive-token.json"
+        "GDRIVE_OAUTH_PATH": "/path/to/gcp-oauth.keys.json",
+        "GDRIVE_CREDENTIALS_PATH": "/path/to/.gdrive-server-credentials.json"
       }
     },
     "google-calendar": {

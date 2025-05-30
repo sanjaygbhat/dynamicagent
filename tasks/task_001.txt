@@ -1,0 +1,75 @@
+# Task ID: 1
+# Title: Setup Project Repository and Environment
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Initialize the project directory structure and set up essential dependencies for the MVP.
+# Details:
+1. Create a project directory structure
+2. Create requirements.txt with essential dependencies:
+   - fastapi
+   - uvicorn
+   - supabase
+   - anthropic
+   - openai
+   - python-dotenv
+3. Create .env.example file with placeholders for required environment variables
+4. Document basic setup instructions in README.md
+
+# Test Strategy:
+1. Verify that the project structure is correctly set up
+2. Ensure all dependencies in requirements.txt can be installed without conflicts
+3. Confirm that the .env.example file contains all necessary environment variables
+
+# Subtasks:
+## 1. Create project directory and requirements.txt [done]
+### Dependencies: None
+### Description: Create the project folder and requirements.txt with all necessary dependencies
+### Details:
+Create requirements.txt with:
+fastapi
+uvicorn[standard]
+supabase
+anthropic
+openai
+python-dotenv
+httpx
+pydantic
+<info added on 2025-05-28T08:48:16.701Z>
+✅ COMPLETED: Created requirements.txt file with all necessary dependencies for the Dynamic MCP Agent API:
+
+Dependencies included:
+- FastAPI 0.104.1 and uvicorn[standard] 0.24.0 for the web framework and server
+- supabase 2.3.0 for database and authentication
+- anthropic 0.7.8 and openai 1.6.1 for AI/ML capabilities
+- python-dotenv 1.0.0 for environment variable management
+- httpx 0.25.2 for HTTP client functionality
+- pydantic 2.5.0 for data validation
+- numpy 1.24.3 for vector operations and embeddings
+
+The file is properly organized with comments separating different categories of dependencies.
+</info added on 2025-05-28T08:48:16.701Z>
+
+## 2. Create .env.example file [done]
+### Dependencies: 1.1
+### Description: Create environment variable template file
+### Details:
+Create .env.example with:
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_anon_key
+ANTHROPIC_API_KEY=your_anthropic_key
+OPENAI_API_KEY=your_openai_key
+
+## 3. Create .gitignore file [done]
+### Dependencies: 1.1
+### Description: Add Python gitignore to exclude sensitive files
+### Details:
+Create .gitignore with:
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+.idea/
+.vscode/
+

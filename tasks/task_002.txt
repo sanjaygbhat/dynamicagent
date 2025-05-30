@@ -1,0 +1,95 @@
+# Task ID: 2
+# Title: Implement FastAPI Application Structure
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Set up the basic FastAPI application structure with CORS middleware, health check endpoint, and exception handler in a single main.py file for the MVP.
+# Details:
+1. In main.py, create FastAPI application instance
+2. Add CORS middleware with settings for all origins
+3. Implement health check endpoint at GET /
+4. Add basic exception handler
+
+Code snippet:
+```python
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import os
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for MVP
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"message": "An unexpected error occurred"},
+    )
+
+@app.get("/")
+async def health_check():
+    return {"status": "healthy"}
+```
+
+# Test Strategy:
+1. Run the application and ensure it starts without errors
+2. Test the health check endpoint returns the expected response
+3. Verify CORS settings allow requests from any origin
+4. Test exception handling by triggering an error
+
+# Subtasks:
+## 1. Create main.py with FastAPI app [done]
+### Dependencies: None
+### Description: Initialize FastAPI application in main.py
+### Details:
+Create main.py and initialize:
+from fastapi import FastAPI
+app = FastAPI(title="Dynamic MCP Agent API")
+
+## 2. Add CORS middleware [done]
+### Dependencies: 2.1
+### Description: Configure CORS to allow all origins for MVP
+### Details:
+Add CORS middleware:
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+## 3. Add health check endpoint [done]
+### Dependencies: 2.1
+### Description: Create GET / endpoint for health checks
+### Details:
+Add endpoint:
+@app.get("/")
+async def health_check():
+    return {"status": "healthy", "message": "Dynamic MCP Agent API"}
+
+## 4. Add global exception handler [done]
+### Dependencies: 2.1
+### Description: Implement exception handler for all unhandled errors
+### Details:
+Add handler:
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "message": str(exc)}
+    )
+

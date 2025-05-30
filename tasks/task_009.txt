@@ -1,0 +1,145 @@
+# Task ID: 9
+# Title: Implement Agent Configuration Generation
+# Status: done
+# Dependencies: 8
+# Priority: high
+# Description: Create a simplified system to generate agent configurations compatible with the fast-agent framework for MVP.
+# Details:
+1. Implement simplified agent configuration generation logic in main.py
+2. Load config templates from config.json
+3. Insert collected credentials into the template
+4. Return formatted JSON compatible with fast-agent framework in the exact required format
+5. Do NOT create the actual agent - just return the properly formatted configuration JSON
+
+The agent configuration JSON must include these specific sections:
+- mcp_server_info
+- mcp_config (with actual credential values)
+- user_prompt
+- workflow
+
+Code snippet:
+```python
+class AgentConfigRequest(BaseModel):
+    session_id: str
+
+@app.post("/api/agent-config")
+async def create_agent_config(request: AgentConfigRequest, user = Depends(get_current_user)):
+    # Verify session exists and belongs to user
+    session_response = supabase.table("sessions") \
+        .select("*") \
+        .eq("id", request.session_id) \
+        .eq("user_id", user.id) \
+        .execute()
+    
+    if not session_response.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    session = session_response.data[0]
+    
+    # Get MCP servers identified in this session
+    messages_response = supabase.table("chat_messages") \
+        .select("mcp_servers") \
+        .eq("session_id", request.session_id) \
+        .execute()
+    
+    # Extract unique server IDs from all messages
+    server_ids = set()
+    for message in messages_response.data:
+        if message.get("mcp_servers"):
+            for server in message["mcp_servers"]:
+                server_ids.add(server["id"])
+    
+    if not server_ids:
+        raise HTTPException(status_code=400, detail="No MCP servers identified for this session")
+    
+    # Get server details
+    servers_response = supabase.table("mcp_servers") \
+        .select("*") \
+        .in_("id", list(server_ids)) \
+        .execute()
+    
+    # Get credentials from session
+    credentials = session.get("credentials", {})
+    
+    # Load config templates from config.json
+    with open("config.json", "r") as f:
+        config_templates = json.load(f)
+    
+    # Generate agent configuration
+    agent_config = {
+        "mcp_server_info": [],
+        "mcp_config": {},
+        "user_prompt": session.get("initial_prompt", ""),
+        "workflow": config_templates.get("workflow", {})
+    }
+    
+    for server in servers_response.data:
+        server_id = str(server["id"])
+        if server_id not in credentials:
+            raise HTTPException(status_code=400, detail=f"Missing credentials for server {server['name']}")
+        
+        # Get template for this server type
+        template = config_templates.get(server["type"], {})
+        
+        # Add server info
+        server_info = {
+            "id": server["id"],
+            "name": server["name"],
+            "type": server["type"],
+            "endpoint": server["endpoint"]
+        }
+        agent_config["mcp_server_info"].append(server_info)
+        
+        # Add server config with credentials
+        agent_config["mcp_config"][server_id] = {
+            "credentials": credentials[server_id],
+            **template.get("config", {})  # Add any template-specific configuration
+        }
+    
+    # Return the configuration JSON (do not create the agent)    
+    return agent_config
+```
+
+# Test Strategy:
+1. Test agent configuration generation with basic MCP server setup
+2. Verify config templates are correctly loaded from config.json
+3. Ensure credentials are properly inserted into the configuration
+4. Validate the JSON structure contains all required sections: mcp_server_info, mcp_config, user_prompt, and workflow
+5. Test that actual credential values are included in the mcp_config section
+6. Verify the endpoint returns only the configuration JSON and does not attempt to create an agent
+7. Test compatibility of generated JSON with fast-agent framework requirements
+
+# Subtasks:
+## 1. Create agent config endpoint [done]
+### Dependencies: None
+### Description: Implement POST /api/agent-config endpoint
+### Details:
+Create endpoint:
+@app.post("/api/agent-config")
+async def create_agent_config(
+    session_id: str,
+    user = Depends(get_current_user)
+):
+
+## 2. Get identified MCP servers [done]
+### Dependencies: 9.1
+### Description: Retrieve MCP servers identified in the session
+### Details:
+Query session context to get list of identified MCP servers and their details from the database
+
+## 3. Load config templates [done]
+### Dependencies: 9.2
+### Description: Load MCP config templates from config.json
+### Details:
+Load config.json and extract mcpServers configuration templates for identified servers
+
+## 4. Generate and return config JSON [done]
+### Dependencies: 9.3
+### Description: Build the final agent configuration JSON
+### Details:
+Create JSON with:
+- mcp_server_info: server details and tools
+- mcp_config: mcpServers config with credentials
+- user_prompt: chat history
+- workflow: generated workflow steps
+

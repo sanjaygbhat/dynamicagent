@@ -1,0 +1,538 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Setup Project Repository and Environment",
+      "description": "Initialize the project directory structure and set up essential dependencies for the MVP.",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "details": "1. Create a project directory structure\n2. Create requirements.txt with essential dependencies:\n   - fastapi\n   - uvicorn\n   - supabase\n   - anthropic\n   - openai\n   - python-dotenv\n3. Create .env.example file with placeholders for required environment variables\n4. Document basic setup instructions in README.md",
+      "testStrategy": "1. Verify that the project structure is correctly set up\n2. Ensure all dependencies in requirements.txt can be installed without conflicts\n3. Confirm that the .env.example file contains all necessary environment variables",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create project directory and requirements.txt",
+          "description": "Create the project folder and requirements.txt with all necessary dependencies",
+          "details": "Create requirements.txt with:\nfastapi\nuvicorn[standard]\nsupabase\nanthropic\nopenai\npython-dotenv\nhttpx\npydantic\n<info added on 2025-05-28T08:48:16.701Z>\n✅ COMPLETED: Created requirements.txt file with all necessary dependencies for the Dynamic MCP Agent API:\n\nDependencies included:\n- FastAPI 0.104.1 and uvicorn[standard] 0.24.0 for the web framework and server\n- supabase 2.3.0 for database and authentication\n- anthropic 0.7.8 and openai 1.6.1 for AI/ML capabilities\n- python-dotenv 1.0.0 for environment variable management\n- httpx 0.25.2 for HTTP client functionality\n- pydantic 2.5.0 for data validation\n- numpy 1.24.3 for vector operations and embeddings\n\nThe file is properly organized with comments separating different categories of dependencies.\n</info added on 2025-05-28T08:48:16.701Z>",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 1
+        },
+        {
+          "id": 2,
+          "title": "Create .env.example file",
+          "description": "Create environment variable template file",
+          "details": "Create .env.example with:\nSUPABASE_URL=your_supabase_url\nSUPABASE_KEY=your_supabase_anon_key\nANTHROPIC_API_KEY=your_anthropic_key\nOPENAI_API_KEY=your_openai_key",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 1
+        },
+        {
+          "id": 3,
+          "title": "Create .gitignore file",
+          "description": "Add Python gitignore to exclude sensitive files",
+          "details": "Create .gitignore with:\n.env\n__pycache__/\n*.pyc\n.venv/\nvenv/\n.idea/\n.vscode/",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Implement FastAPI Application Structure",
+      "description": "Set up the basic FastAPI application structure with CORS middleware, health check endpoint, and exception handler in a single main.py file for the MVP.",
+      "status": "done",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "1. In main.py, create FastAPI application instance\n2. Add CORS middleware with settings for all origins\n3. Implement health check endpoint at GET /\n4. Add basic exception handler\n\nCode snippet:\n```python\nfrom fastapi import FastAPI, Request\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom fastapi.responses import JSONResponse\nimport os\n\napp = FastAPI()\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],  # Allow all origins for MVP\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\n@app.exception_handler(Exception)\nasync def global_exception_handler(request: Request, exc: Exception):\n    return JSONResponse(\n        status_code=500,\n        content={\"message\": \"An unexpected error occurred\"},\n    )\n\n@app.get(\"/\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\n```",
+      "testStrategy": "1. Run the application and ensure it starts without errors\n2. Test the health check endpoint returns the expected response\n3. Verify CORS settings allow requests from any origin\n4. Test exception handling by triggering an error",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create main.py with FastAPI app",
+          "description": "Initialize FastAPI application in main.py",
+          "details": "Create main.py and initialize:\nfrom fastapi import FastAPI\napp = FastAPI(title=\"Dynamic MCP Agent API\")",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 2
+        },
+        {
+          "id": 2,
+          "title": "Add CORS middleware",
+          "description": "Configure CORS to allow all origins for MVP",
+          "details": "Add CORS middleware:\nfrom fastapi.middleware.cors import CORSMiddleware\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 2
+        },
+        {
+          "id": 3,
+          "title": "Add health check endpoint",
+          "description": "Create GET / endpoint for health checks",
+          "details": "Add endpoint:\n@app.get(\"/\")\nasync def health_check():\n    return {\"status\": \"healthy\", \"message\": \"Dynamic MCP Agent API\"}",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 2
+        },
+        {
+          "id": 4,
+          "title": "Add global exception handler",
+          "description": "Implement exception handler for all unhandled errors",
+          "details": "Add handler:\nfrom fastapi import Request\nfrom fastapi.responses import JSONResponse\n\n@app.exception_handler(Exception)\nasync def global_exception_handler(request: Request, exc: Exception):\n    return JSONResponse(\n        status_code=500,\n        content={\"error\": \"Internal server error\", \"message\": str(exc)}\n    )",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 2
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Set Up Supabase Integration",
+      "description": "Integrate Supabase for database and authentication by setting up the required tables and initializing the client.",
+      "status": "done",
+      "dependencies": [
+        2
+      ],
+      "priority": "high",
+      "details": "For MVP, focus on these essential steps:\n\n1. Create a Supabase project\n2. Run the provided SQL schema from the specification document to create all necessary tables\n3. Initialize the Supabase client in main.py\n\nNo need to implement complex migrations or separate files for the MVP version. The SQL schema in the specification document contains all the necessary table definitions and extensions.",
+      "testStrategy": "1. Verify Supabase connection from the application\n2. Confirm all tables from the schema were created successfully\n3. Test basic database operations (insert/select) through the initialized client",
+      "subtasks": [
+        {
+          "id": 3.1,
+          "title": "Create Supabase project",
+          "status": "done"
+        },
+        {
+          "id": 3.2,
+          "title": "Run SQL schema from specification document",
+          "status": "done"
+        },
+        {
+          "id": 3.3,
+          "title": "Initialize Supabase client in main.py",
+          "status": "done"
+        },
+        {
+          "id": 3.4,
+          "title": "Test basic database connectivity",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Implement Google OAuth Authentication",
+      "description": "Integrate Google OAuth via Supabase Auth, implement a simple token exchange endpoint, and create authentication dependencies for FastAPI endpoints.",
+      "status": "done",
+      "dependencies": [
+        3
+      ],
+      "priority": "high",
+      "details": "For MVP, focus on these core components:\n\n1. Enable Google OAuth provider in Supabase dashboard\n2. Implement simple POST /api/auth/google endpoint in main.py\n3. Use Supabase client to exchange Google OAuth token for Supabase session\n4. Return JWT token to client\n5. Create get_current_user dependency function to verify Supabase tokens\n6. Test with a protected endpoint\n\nCode snippets:\n\n```python\n# Token exchange endpoint\nfrom fastapi import APIRouter, HTTPException, Depends\nfrom fastapi.security import HTTPBearer, HTTPAuthorizationCredentials\nfrom supabase import create_client, Client\nfrom pydantic import BaseModel\nimport os\n\nSUPABASE_URL = os.environ.get(\"SUPABASE_URL\")\nSUPABASE_KEY = os.environ.get(\"SUPABASE_KEY\")\nsupabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)\n\nclass GoogleAuthRequest(BaseModel):\n    token: str\n\n@app.post(\"/api/auth/google\")\nasync def google_auth(request: GoogleAuthRequest):\n    try:\n        response = supabase.auth.sign_in_with_idp({\n            \"provider\": \"google\",\n            \"access_token\": request.token,\n        })\n        return {\"access_token\": response.session.access_token}\n    except Exception as e:\n        raise HTTPException(status_code=400, detail=str(e))\n\n# Authentication dependency\nsecurity = HTTPBearer()\n\nasync def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):\n    try:\n        # Verify the token with Supabase\n        user = supabase.auth.get_user(credentials.credentials)\n        return user.user\n    except Exception as e:\n        raise HTTPException(\n            status_code=401,\n            detail=\"Invalid authentication credentials\",\n            headers={\"WWW-Authenticate\": \"Bearer\"},\n        )\n\n# Example of protected endpoint\n@app.get(\"/api/protected-resource\")\nasync def get_protected_resource(user = Depends(get_current_user)):\n    return {\"message\": \"This is protected\", \"user_id\": user.id}\n```",
+      "testStrategy": "1. Test the Google OAuth flow with a simple end-to-end test\n2. Verify token exchange with a valid Google token\n3. Test the get_current_user dependency with a valid token\n4. Verify access to the protected endpoint works with authentication",
+      "subtasks": [
+        {
+          "id": "4.1",
+          "title": "Enable Google OAuth in Supabase dashboard",
+          "status": "done"
+        },
+        {
+          "id": "4.2",
+          "title": "Implement simple /api/auth/google endpoint",
+          "status": "done"
+        },
+        {
+          "id": "4.3",
+          "title": "Create get_current_user dependency function",
+          "status": "done"
+        },
+        {
+          "id": "4.4",
+          "title": "Test with a protected endpoint",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Implement Chat Endpoint",
+      "description": "Create the main chat endpoint for workflow analysis and MCP server identification.",
+      "status": "done",
+      "dependencies": [
+        "4"
+      ],
+      "priority": "high",
+      "details": "1. Implement POST /api/chat endpoint in main.py\n2. Integrate Claude AI for workflow analysis\n3. Identify relevant MCP servers based on user message\n4. Check for missing credentials\n5. Return response with required credentials or agent config\n6. Save messages to database\n\nCode snippet:\n```python\nfrom fastapi import Depends, HTTPException\nfrom pydantic import BaseModel\nimport httpx\nimport os\n\nCLAUDE_API_KEY = os.environ.get(\"CLAUDE_API_KEY\")\n\nclass ChatRequest(BaseModel):\n    message: str\n    session_id: str\n\n@app.post(\"/api/chat\")\nasync def chat(request: ChatRequest, user = Depends(get_current_user)):\n    # Get or create session\n    session = await get_or_create_session(request.session_id, user.id)\n    \n    # Analyze workflow with Claude AI\n    analysis = await analyze_with_claude(request.message)\n    \n    # Identify MCP servers based on analysis\n    mcp_servers = await identify_mcp_servers(analysis)\n    \n    # Check for missing credentials\n    missing_credentials = await check_missing_credentials(user.id, mcp_servers)\n    \n    # Generate response with Claude\n    response = await generate_response(analysis, mcp_servers, missing_credentials)\n    \n    # Store chat message in database\n    await store_chat_message(user.id, session.id, request.message, response)\n    \n    return {\n        \"response\": response, \n        \"mcp_servers\": mcp_servers,\n        \"missing_credentials\": missing_credentials\n    }\n\nasync def analyze_with_claude(message):\n    async with httpx.AsyncClient() as client:\n        response = await client.post(\n            \"https://api.anthropic.com/v1/messages\",\n            headers={\"x-api-key\": CLAUDE_API_KEY, \"anthropic-version\": \"2023-06-01\"},\n            json={\n                \"model\": \"claude-2\",\n                \"max_tokens\": 1000,\n                \"messages\": [{\"role\": \"user\", \"content\": f\"Analyze this workflow: {message}\"}]\n            }\n        )\n        return response.json()[\"content\"]\n\nasync def identify_mcp_servers(analysis):\n    # Simple logic to identify MCP servers based on analysis\n    # This will be expanded in future versions\n    return []\n\nasync def check_missing_credentials(user_id, mcp_servers):\n    # Check which credentials the user is missing for the identified MCP servers\n    missing = []\n    for server in mcp_servers:\n        has_creds = await check_user_has_credentials(user_id, server['id'])\n        if not has_creds:\n            missing.append(server['id'])\n    return missing\n\nasync def generate_response(analysis, mcp_servers, missing_credentials):\n    # Generate simple response based on analysis and missing credentials\n    if missing_credentials:\n        return \"To complete this workflow, you'll need to provide credentials for the following services: \" + \\\n               \", \".join([server['name'] for server in mcp_servers if server['id'] in missing_credentials])\n    else:\n        return \"I can help you with this workflow. Here's what you need to do next...\"\n\nasync def store_chat_message(user_id, session_id, message, response):\n    # Store message in database\n    supabase.table(\"chat_messages\").insert({\n        \"user_id\": user_id,\n        \"session_id\": session_id,\n        \"content\": message,\n        \"response\": response\n    }).execute()\n```",
+      "testStrategy": "1. Test chat endpoint with various workflow requests\n2. Verify MCP server identification logic\n3. Test missing credentials detection\n4. Ensure chat messages are correctly stored in database\n5. Test error handling for invalid sessions or requests",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Basic Chat Endpoint",
+          "description": "Create a simple POST /api/chat endpoint that accepts user messages and returns responses.",
+          "dependencies": [],
+          "details": "Implement the endpoint in main.py with proper request validation, authentication, and basic error handling. The endpoint should accept a message and session_id and return a response.\n<info added on 2025-05-28T08:31:46.438Z>\nExtend the endpoint to support file uploads. The chat endpoint should accept optional file attachments along with the message and session_id. Implement multipart form handling to process uploaded files, validate file types and sizes, and include file content in the request to the AI service. Ensure proper error handling for file-related issues such as invalid formats or upload failures.\n</info added on 2025-05-28T08:31:46.438Z>\n<info added on 2025-05-28T08:39:07.303Z>\nUpdate the ChatRequest model in the endpoint implementation to include an optional credentials field that can store authentication information for external services. The model should now have the following structure:\n\n```python\nclass ChatRequest(BaseModel):\n    message: str\n    session_id: str\n    credentials: Optional[Dict[str, Dict[str, str]]] = None\n    files: Optional[List[UploadFile]] = None\n```\n\nThis allows the chat endpoint to receive and process service credentials when needed, enabling authenticated interactions with external APIs while maintaining backward compatibility with existing requests.\n</info added on 2025-05-28T08:39:07.303Z>",
+          "status": "done"
+        },
+        {
+          "id": 2,
+          "title": "Integrate Claude AI for Message Analysis",
+          "description": "Connect to Claude AI to analyze user messages and identify workflow requirements.",
+          "dependencies": [
+            1
+          ],
+          "details": "Create a function to send user messages to Claude AI and parse the response. Focus on extracting key workflow elements that can help identify required MCP servers.",
+          "status": "done"
+        },
+        {
+          "id": 3,
+          "title": "Implement MCP Server Identification",
+          "description": "Create logic to identify relevant MCP servers based on Claude's analysis.",
+          "dependencies": [
+            2
+          ],
+          "details": "Develop a simple mechanism to map Claude's analysis to specific MCP servers. For the MVP, this can be a basic pattern matching approach rather than complex vector search.\n<info added on 2025-05-28T08:28:29.841Z>\nImplement vector search functionality to match Claude's analysis with relevant MCP servers. Use the embedding generated from Claude's message analysis to query the mcp_servers table using the existing vector search function in our SQL schema. This approach will find semantically similar servers based on content rather than simple pattern matching. Ensure the search results are ranked by similarity score and include a relevance threshold to filter out low-quality matches.\n</info added on 2025-05-28T08:28:29.841Z>",
+          "status": "done"
+        },
+        {
+          "id": 4,
+          "title": "Add Missing Credentials Check",
+          "description": "Check if the user has the necessary credentials for identified MCP servers.",
+          "dependencies": [
+            3
+          ],
+          "details": "Query the user's stored credentials and compare against the required MCP servers to identify any missing credentials that need to be provided.",
+          "status": "done"
+        },
+        {
+          "id": 5,
+          "title": "Implement Response Generation",
+          "description": "Generate appropriate responses based on analysis and credential status.",
+          "dependencies": [
+            4
+          ],
+          "details": "Create response logic that informs users about required credentials or provides next steps for their workflow. Keep responses simple and actionable for the MVP.\n<info added on 2025-05-28T08:39:19.641Z>\nThe response format should follow this JSON structure:\n```json\n{\n  \"reply\": \"String containing the AI's response message\",\n  \"session_id\": \"Unique session identifier\",\n  \"required_credentials\": [\"Array of missing credential names, if any\"],\n  \"status\": \"Current status (pending_credentials, success, etc.)\",\n  \"agent_created\": true/false,\n  \"agent_id\": \"ID of created agent (only included if agent_created is true)\"\n}\n```\n\nEnsure all response logic properly populates these fields, especially the required_credentials array when users are missing necessary API keys or authentication. The status field should accurately reflect the current state of the user's workflow.\n</info added on 2025-05-28T08:39:19.641Z>",
+          "status": "done"
+        },
+        {
+          "id": 6,
+          "title": "Add Message Storage",
+          "description": "Save user messages and system responses to the database.",
+          "dependencies": [
+            5
+          ],
+          "details": "Implement database storage for chat messages, including user ID, session ID, message content, and system response.",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Implement Chat History Retrieval",
+      "description": "Create a simplified endpoint to retrieve user's chat history with basic pagination for MVP.",
+      "status": "done",
+      "dependencies": [
+        6
+      ],
+      "priority": "medium",
+      "details": "1. Implement GET /api/chat/history endpoint with basic pagination\n2. Use limit and offset parameters for pagination\n3. Return user's chat sessions with their messages\n4. Use Supabase queries for efficient data retrieval\n\nCode snippet:\n```python\nfrom fastapi import Depends, Query\n\n@app.get(\"/api/chat/history\")\nasync def get_chat_history(\n    user = Depends(get_current_user), \n    limit: int = Query(20, ge=1, le=100),\n    offset: int = Query(0, ge=0)\n):\n    # Get chat sessions with messages from Supabase with pagination\n    response = supabase.table(\"chat_sessions\") \\\n        .select(\"*, chat_messages(*)\")\\\n        .eq(\"user_id\", user.id) \\\n        .order(\"updated_at\", desc=True) \\\n        .limit(limit) \\\n        .offset(offset) \\\n        .execute()\n    \n    # Get total count for pagination metadata\n    count_response = supabase.table(\"chat_sessions\") \\\n        .select(\"id\", count=\"exact\") \\\n        .eq(\"user_id\", user.id) \\\n        .execute()\n    \n    total = count_response.count\n    \n    return {\n        \"sessions\": response.data,\n        \"total\": total,\n        \"limit\": limit,\n        \"offset\": offset\n    }\n```",
+      "testStrategy": "1. Test basic pagination functionality with various limit and offset values\n2. Verify that only the authenticated user's sessions and messages are returned\n3. Ensure correct ordering of sessions (newest first)\n4. Verify that all messages for each session are included in the response\n5. Test error handling for invalid pagination parameters",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create chat history endpoint",
+          "description": "Implement GET /api/chat/history with authentication",
+          "details": "Create endpoint:\n@app.get(\"/api/chat/history\")\nasync def get_chat_history(\n    user = Depends(get_current_user),\n    limit: int = Query(20, ge=1, le=100),\n    offset: int = Query(0, ge=0)\n):",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 7
+        },
+        {
+          "id": 2,
+          "title": "Query sessions with messages",
+          "description": "Fetch user's sessions and messages from Supabase",
+          "details": "Query data:\nresponse = supabase.table(\"sessions\") \\\n    .select(\"*, chat_messages(*)\") \\\n    .eq(\"user_id\", user.id) \\\n    .order(\"created_at\", desc=True) \\\n    .range(offset, offset + limit - 1) \\\n    .execute()",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 7
+        },
+        {
+          "id": 3,
+          "title": "Return paginated response",
+          "description": "Format and return the response with pagination metadata",
+          "details": "Return formatted response:\nreturn {\n    \"sessions\": response.data,\n    \"pagination\": {\n        \"limit\": limit,\n        \"offset\": offset,\n        \"total\": total_count\n    }\n}",
+          "status": "done",
+          "dependencies": [
+            2
+          ],
+          "parentTaskId": 7
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Implement Credential Management",
+      "description": "Create a system to collect, store, and validate credentials for identified MCP servers within the chat endpoint.",
+      "status": "done",
+      "dependencies": [
+        6
+      ],
+      "priority": "high",
+      "details": "For MVP, implement credential management directly in the chat endpoint:\n\n1. Modify the chat endpoint to accept credentials in the request body\n2. Store credentials in session's collected_credentials JSON field\n3. Implement simple validation to check if required fields are present\n4. Update credentials when provided in chat request\n\nCode snippet:\n```python\nfrom pydantic import BaseModel\nfrom typing import Optional\n\nclass ChatRequest(BaseModel):\n    session_id: str\n    message: str\n    server_id: Optional[int] = None\n    credentials: Optional[dict] = None\n\n@app.post(\"/api/chat\")\nasync def chat(request: ChatRequest, user = Depends(get_current_user)):\n    # Verify session exists and belongs to user\n    session_response = supabase.table(\"sessions\") \\\n        .select(\"*\") \\\n        .eq(\"id\", request.session_id) \\\n        .eq(\"user_id\", user.id) \\\n        .execute()\n    \n    if not session_response.data:\n        raise HTTPException(status_code=404, detail=\"Session not found\")\n    \n    # Handle credentials if provided\n    if request.credentials and request.server_id:\n        # Verify MCP server exists\n        server_response = supabase.table(\"mcp_servers\") \\\n            .select(\"*\") \\\n            .eq(\"id\", request.server_id) \\\n            .execute()\n        \n        if not server_response.data:\n            raise HTTPException(status_code=404, detail=\"MCP server not found\")\n        \n        server = server_response.data[0]\n        \n        # Simple validation that required fields are present\n        required_creds = server.get(\"credential_requirements\", [])\n        missing_creds = [cred for cred in required_creds if cred not in request.credentials]\n        \n        if missing_creds:\n            return {\"status\": \"incomplete\", \"missing_credentials\": missing_creds}\n        \n        # Store credentials in session's collected_credentials JSON field\n        session_data = session_response.data[0]\n        collected_credentials = session_data.get(\"collected_credentials\", {})\n        collected_credentials[str(request.server_id)] = request.credentials\n        \n        supabase.table(\"sessions\") \\\n            .update({\"collected_credentials\": collected_credentials}) \\\n            .eq(\"id\", request.session_id) \\\n            .execute()\n    \n    # Continue with chat processing...\n    # [existing chat endpoint logic]\n    \n    return {\"response\": \"Chat response here\"}\n```",
+      "testStrategy": "1. Test credential storage with valid and invalid credentials via chat endpoint\n2. Verify credentials are stored in collected_credentials JSON field\n3. Test simple validation that required fields are present\n4. Ensure credentials are updated when provided in chat request\n5. Verify chat functionality works correctly with and without credential updates\n6. Test the response when credentials are missing, confirming it returns the list of missing credentials",
+      "subtasks": [
+        {
+          "id": "8.1",
+          "title": "Modify ChatRequest model to accept credentials",
+          "status": "done"
+        },
+        {
+          "id": "8.2",
+          "title": "Implement credential validation in chat endpoint",
+          "status": "done"
+        },
+        {
+          "id": "8.3",
+          "title": "Add credential storage in session's collected_credentials field",
+          "status": "done"
+        },
+        {
+          "id": "8.4",
+          "title": "Test credential validation and storage functionality",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Implement Agent Configuration Generation",
+      "description": "Create a simplified system to generate agent configurations compatible with the fast-agent framework for MVP.",
+      "status": "done",
+      "dependencies": [
+        8
+      ],
+      "priority": "high",
+      "details": "1. Implement simplified agent configuration generation logic in main.py\n2. Load config templates from config.json\n3. Insert collected credentials into the template\n4. Return formatted JSON compatible with fast-agent framework in the exact required format\n5. Do NOT create the actual agent - just return the properly formatted configuration JSON\n\nThe agent configuration JSON must include these specific sections:\n- mcp_server_info\n- mcp_config (with actual credential values)\n- user_prompt\n- workflow\n\nCode snippet:\n```python\nclass AgentConfigRequest(BaseModel):\n    session_id: str\n\n@app.post(\"/api/agent-config\")\nasync def create_agent_config(request: AgentConfigRequest, user = Depends(get_current_user)):\n    # Verify session exists and belongs to user\n    session_response = supabase.table(\"sessions\") \\\n        .select(\"*\") \\\n        .eq(\"id\", request.session_id) \\\n        .eq(\"user_id\", user.id) \\\n        .execute()\n    \n    if not session_response.data:\n        raise HTTPException(status_code=404, detail=\"Session not found\")\n    \n    session = session_response.data[0]\n    \n    # Get MCP servers identified in this session\n    messages_response = supabase.table(\"chat_messages\") \\\n        .select(\"mcp_servers\") \\\n        .eq(\"session_id\", request.session_id) \\\n        .execute()\n    \n    # Extract unique server IDs from all messages\n    server_ids = set()\n    for message in messages_response.data:\n        if message.get(\"mcp_servers\"):\n            for server in message[\"mcp_servers\"]:\n                server_ids.add(server[\"id\"])\n    \n    if not server_ids:\n        raise HTTPException(status_code=400, detail=\"No MCP servers identified for this session\")\n    \n    # Get server details\n    servers_response = supabase.table(\"mcp_servers\") \\\n        .select(\"*\") \\\n        .in_(\"id\", list(server_ids)) \\\n        .execute()\n    \n    # Get credentials from session\n    credentials = session.get(\"credentials\", {})\n    \n    # Load config templates from config.json\n    with open(\"config.json\", \"r\") as f:\n        config_templates = json.load(f)\n    \n    # Generate agent configuration\n    agent_config = {\n        \"mcp_server_info\": [],\n        \"mcp_config\": {},\n        \"user_prompt\": session.get(\"initial_prompt\", \"\"),\n        \"workflow\": config_templates.get(\"workflow\", {})\n    }\n    \n    for server in servers_response.data:\n        server_id = str(server[\"id\"])\n        if server_id not in credentials:\n            raise HTTPException(status_code=400, detail=f\"Missing credentials for server {server['name']}\")\n        \n        # Get template for this server type\n        template = config_templates.get(server[\"type\"], {})\n        \n        # Add server info\n        server_info = {\n            \"id\": server[\"id\"],\n            \"name\": server[\"name\"],\n            \"type\": server[\"type\"],\n            \"endpoint\": server[\"endpoint\"]\n        }\n        agent_config[\"mcp_server_info\"].append(server_info)\n        \n        # Add server config with credentials\n        agent_config[\"mcp_config\"][server_id] = {\n            \"credentials\": credentials[server_id],\n            **template.get(\"config\", {})  # Add any template-specific configuration\n        }\n    \n    # Return the configuration JSON (do not create the agent)    \n    return agent_config\n```",
+      "testStrategy": "1. Test agent configuration generation with basic MCP server setup\n2. Verify config templates are correctly loaded from config.json\n3. Ensure credentials are properly inserted into the configuration\n4. Validate the JSON structure contains all required sections: mcp_server_info, mcp_config, user_prompt, and workflow\n5. Test that actual credential values are included in the mcp_config section\n6. Verify the endpoint returns only the configuration JSON and does not attempt to create an agent\n7. Test compatibility of generated JSON with fast-agent framework requirements",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create agent config endpoint",
+          "description": "Implement POST /api/agent-config endpoint",
+          "details": "Create endpoint:\n@app.post(\"/api/agent-config\")\nasync def create_agent_config(\n    session_id: str,\n    user = Depends(get_current_user)\n):",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 9
+        },
+        {
+          "id": 2,
+          "title": "Get identified MCP servers",
+          "description": "Retrieve MCP servers identified in the session",
+          "details": "Query session context to get list of identified MCP servers and their details from the database",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 9
+        },
+        {
+          "id": 3,
+          "title": "Load config templates",
+          "description": "Load MCP config templates from config.json",
+          "details": "Load config.json and extract mcpServers configuration templates for identified servers",
+          "status": "done",
+          "dependencies": [
+            2
+          ],
+          "parentTaskId": 9
+        },
+        {
+          "id": 4,
+          "title": "Generate and return config JSON",
+          "description": "Build the final agent configuration JSON",
+          "details": "Create JSON with:\n- mcp_server_info: server details and tools\n- mcp_config: mcpServers config with credentials\n- user_prompt: chat history\n- workflow: generated workflow steps",
+          "status": "done",
+          "dependencies": [
+            3
+          ],
+          "parentTaskId": 9
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Implement MCP Server Data Management",
+      "description": "Create a simple function to load MCP server data from multiple JSON files (servers.json, config.json, credinfo.json), generate embeddings, and upsert to the database.",
+      "status": "done",
+      "dependencies": [
+        3
+      ],
+      "priority": "medium",
+      "details": "1. Implement JSON parsing for multiple MCP configuration files (servers.json, config.json, credinfo.json)\n2. Use OpenAI API to generate embeddings\n3. Create database upsert logic\n4. Make function work as both standalone script and importable module\n\nCode snippet:\n```python\nimport json\nimport httpx\nimport os\nimport asyncio\n\nOPENAI_API_KEY = os.environ.get(\"OPENAI_API_KEY\")\n\nasync def generate_embedding(text):\n    async with httpx.AsyncClient() as client:\n        response = await client.post(\n            \"https://api.openai.com/v1/embeddings\",\n            headers={\"Authorization\": f\"Bearer {OPENAI_API_KEY}\"},\n            json={\"input\": text, \"model\": \"text-embedding-ada-002\"}\n        )\n        return response.json()[\"data\"][0][\"embedding\"]\n\nasync def load_mcp_data():\n    # Load data from multiple files\n    with open('servers.json', 'r') as f:\n        servers_data = json.load(f)\n    \n    with open('config.json', 'r') as f:\n        config_data = json.load(f)\n        \n    with open('credinfo.json', 'r') as f:\n        cred_data = json.load(f)\n    \n    # Process and combine data\n    for server in servers_data:\n        # Enrich server data with config and credential info as needed\n        server_config = next((c for c in config_data if c.get('server_id') == server.get('id')), {})\n        server_creds = next((c for c in cred_data if c.get('server_id') == server.get('id')), {})\n        \n        # Generate embedding for server description\n        embedding = await generate_embedding(server['description'])\n        \n        # Upsert to Supabase\n        supabase.table(\"mcp_servers\").upsert({\n            'name': server['name'],\n            'type': server['type'],\n            'description': server['description'],\n            'endpoint': server.get('endpoint', ''),\n            'credential_requirements': server_creds.get('requirements', []),\n            'config': server_config,\n            'embedding': embedding\n        }).execute()\n    \n    print(f\"Loaded {len(servers_data)} MCP servers\")\n\n# Allow running as standalone script\nif __name__ == \"__main__\":\n    asyncio.run(load_mcp_data())\n```",
+      "testStrategy": "1. Test JSON parsing with sample server configurations from all three files\n2. Verify embedding generation and storage\n3. Test database upsert functionality\n4. Verify script can be run standalone and as an imported module",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Load JSON files",
+          "description": "Read servers.json, config.json, and credinfo.json",
+          "details": "Load three JSON files:\nwith open('servers.json', 'r') as f:\n    servers_data = json.load(f)\nwith open('config.json', 'r') as f:\n    config_data = json.load(f)\nwith open('credinfo.json', 'r') as f:\n    cred_data = json.load(f)",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 10
+        },
+        {
+          "id": 2,
+          "title": "Generate embeddings",
+          "description": "Create embeddings for each server using OpenAI",
+          "details": "For each server, generate embedding:\nembedding = openai_client.embeddings.create(\n    model=\"text-embedding-3-small\",\n    input=f\"{server['name']} {server['description']}\"\n)",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 10
+        },
+        {
+          "id": 3,
+          "title": "Combine server data",
+          "description": "Merge data from all three JSON files for each server",
+          "details": "Match servers with their config and credential info by name/id, combine into single record per server",
+          "status": "done",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 10
+        },
+        {
+          "id": 4,
+          "title": "Upsert to database",
+          "description": "Insert or update server data in mcp_servers table",
+          "details": "Upsert each server:\nsupabase.table(\"mcp_servers\").upsert({\n    'name': server['name'],\n    'description': server['description'],\n    'tools': server['tools'],\n    'config_template': config,\n    'credential_info': cred_info,\n    'embedding': embedding\n}).execute()",
+          "status": "done",
+          "dependencies": [
+            2,
+            3
+          ],
+          "parentTaskId": 10
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Implement Basic Error Handling",
+      "description": "Set up basic error handling for the FastAPI application.",
+      "status": "done",
+      "dependencies": [
+        2
+      ],
+      "priority": "medium",
+      "details": "For MVP, focus on implementing a simple but effective error handling system:\n\n1. Implement a global exception handler for FastAPI\n2. Set up basic logging to console\n3. Return user-friendly error messages\n\nCode snippet:\n```python\nimport logging\nfrom fastapi import FastAPI, Request\nfrom fastapi.responses import JSONResponse\n\n# Basic console logging setup\nlogging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')\nlogger = logging.getLogger(__name__)\n\napp = FastAPI()\n\n# Global exception handler\n@app.exception_handler(Exception)\nasync def global_exception_handler(request: Request, exc: Exception):\n    # Log the error with details for debugging\n    logger.error(f\"Unhandled exception: {str(exc)}\", exc_info=True)\n    \n    # Return a user-friendly message\n    return JSONResponse(\n        status_code=500,\n        content={\n            \"error\": \"An unexpected error occurred\",\n            \"message\": \"The server encountered a problem. Please try again later.\"\n        }\n    )\n\n# Example route that triggers an error\n@app.get(\"/api/test-error\")\nasync def test_error():\n    # This will trigger our exception handler\n    raise ValueError(\"This is a test error\")\n```",
+      "testStrategy": "1. Test the global exception handler by triggering various exceptions\n2. Verify that error responses are user-friendly and don't expose sensitive information\n3. Check that errors are properly logged to the console\n4. Ensure the application continues running after handling exceptions",
+      "subtasks": [
+        {
+          "id": "11.1",
+          "title": "Implement global exception handler",
+          "status": "done"
+        },
+        {
+          "id": "11.2",
+          "title": "Configure basic console logging",
+          "status": "done"
+        },
+        {
+          "id": "11.3",
+          "title": "Create user-friendly error response format",
+          "status": "done"
+        },
+        {
+          "id": "11.4",
+          "title": "Add test endpoint to verify error handling",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Create Project README.md Documentation",
+      "description": "Create a comprehensive README.md file that includes project overview, setup instructions, running instructions, API documentation, and example usage.",
+      "details": "Create a well-structured README.md file at the root of the project with the following sections:\n\n1. **Project Overview**\n   - Brief description of the project's purpose and functionality\n   - Key features and technologies used (FastAPI, Supabase, etc.)\n   - Project architecture overview (if applicable)\n\n2. **Setup Instructions**\n   - Prerequisites (Python version, etc.)\n   - Environment setup:\n     - How to clone the repository\n     - How to install dependencies (`pip install -r requirements.txt`)\n     - Required environment variables (reference the .env.example file)\n   - Configuration options\n\n3. **Running the Application**\n   - Development server instructions (`uvicorn main:app --reload`)\n   - Production deployment considerations\n   - Available command-line options\n\n4. **API Documentation**\n   - Document all available endpoints\n   - Include HTTP methods, URL paths, request parameters, and response formats\n   - Note that FastAPI's automatic documentation is available at `/docs` and `/redoc`\n   - Include information about error handling and status codes\n\n5. **Example Usage**\n   - Code snippets showing how to interact with the API\n   - cURL examples for key endpoints\n   - Sample request/response pairs\n\nFormat the README.md with proper Markdown syntax, including:\n- Headers and subheaders\n- Code blocks with syntax highlighting\n- Tables for structured information\n- Lists for sequential instructions\n- Links to relevant resources\n\nExample structure:\n```markdown\n# Project Name\n\n## Overview\nBrief description of the project...\n\n## Setup\n### Prerequisites\n- Python 3.8+\n- ...\n\n### Installation\n```bash\ngit clone <repository-url>\ncd <project-directory>\npip install -r requirements.txt\n```\n\n### Environment Variables\nCreate a `.env` file with the following variables:\n...\n\n## Running the Application\n...\n\n## API Documentation\n...\n\n## Example Usage\n...\n```\n\nEnsure the README is clear, concise, and provides all necessary information for developers to understand, set up, and use the application.",
+      "testStrategy": "To verify the README.md file is complete and accurate:\n\n1. **Content Verification**:\n   - Confirm all required sections are present (overview, setup, running, API docs, examples)\n   - Verify that environment variables mentioned match those in the .env.example file\n   - Check that API endpoints documented match the actual implemented endpoints\n   - Ensure all dependencies listed in requirements.txt are mentioned in setup instructions\n\n2. **Technical Accuracy**:\n   - Test the setup instructions by following them on a clean environment\n   - Verify that the running instructions actually start the application correctly\n   - Test any example API calls to ensure they work as documented\n   - Confirm that error handling information matches the implementation in Task #11\n\n3. **Formatting and Readability**:\n   - Validate Markdown syntax using a Markdown linter\n   - Review the rendered README in a Markdown viewer (like GitHub's preview)\n   - Check for proper heading hierarchy, code block formatting, and table structure\n   - Ensure links are working correctly\n\n4. **Peer Review**:\n   - Have another team member follow the instructions to verify clarity\n   - Get feedback on completeness and understandability\n\n5. **Documentation Consistency**:\n   - Ensure terminology is consistent with the codebase\n   - Verify that API documentation aligns with the actual implementation\n   - Check that error codes and messages match those defined in the error handling system",
+      "status": "pending",
+      "dependencies": [
+        11
+      ],
+      "priority": "low",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Write project overview section",
+          "description": "Create the introduction and overview of the project",
+          "details": "Write sections:\n- Project title and description\n- Key features (Google OAuth, MCP server identification, agent config generation)\n- Technologies used (FastAPI, Supabase, Claude AI, OpenAI)",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 12
+        },
+        {
+          "id": 2,
+          "title": "Document setup instructions",
+          "description": "Write detailed setup and installation steps",
+          "details": "Include:\n- Prerequisites (Python 3.8+)\n- Clone repository\n- Install dependencies (pip install -r requirements.txt)\n- Environment setup (copy .env.example to .env)\n- Supabase project setup",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 12
+        },
+        {
+          "id": 3,
+          "title": "Document API endpoints",
+          "description": "Create API documentation for all endpoints",
+          "details": "Document each endpoint:\n- POST /api/auth/google\n- POST /api/chat\n- GET /api/chat/history\n- POST /api/agent-config\nInclude request/response formats and examples",
+          "status": "pending",
+          "dependencies": [
+            2
+          ],
+          "parentTaskId": 12
+        },
+        {
+          "id": 4,
+          "title": "Add usage examples",
+          "description": "Provide example code and cURL commands",
+          "details": "Include:\n- cURL examples for authentication\n- Example chat workflow\n- Sample credential submission\n- Agent config generation example",
+          "status": "pending",
+          "dependencies": [
+            3
+          ],
+          "parentTaskId": 12
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Implement Agentic Conversation Flow",
+      "description": "Enhance chat endpoint to work as intelligent agent for credential collection",
+      "details": "The chat endpoint should guide users through credential collection step by step, only executing workflows when all credentials are ready",
+      "testStrategy": "",
+      "status": "pending",
+      "dependencies": [
+        11
+      ],
+      "priority": "high",
+      "subtasks": []
+    }
+  ]
+}

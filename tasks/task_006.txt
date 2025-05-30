@@ -1,0 +1,176 @@
+# Task ID: 6
+# Title: Implement Chat Endpoint
+# Status: done
+# Dependencies: 4
+# Priority: high
+# Description: Create the main chat endpoint for workflow analysis and MCP server identification.
+# Details:
+1. Implement POST /api/chat endpoint in main.py
+2. Integrate Claude AI for workflow analysis
+3. Identify relevant MCP servers based on user message
+4. Check for missing credentials
+5. Return response with required credentials or agent config
+6. Save messages to database
+
+Code snippet:
+```python
+from fastapi import Depends, HTTPException
+from pydantic import BaseModel
+import httpx
+import os
+
+CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY")
+
+class ChatRequest(BaseModel):
+    message: str
+    session_id: str
+
+@app.post("/api/chat")
+async def chat(request: ChatRequest, user = Depends(get_current_user)):
+    # Get or create session
+    session = await get_or_create_session(request.session_id, user.id)
+    
+    # Analyze workflow with Claude AI
+    analysis = await analyze_with_claude(request.message)
+    
+    # Identify MCP servers based on analysis
+    mcp_servers = await identify_mcp_servers(analysis)
+    
+    # Check for missing credentials
+    missing_credentials = await check_missing_credentials(user.id, mcp_servers)
+    
+    # Generate response with Claude
+    response = await generate_response(analysis, mcp_servers, missing_credentials)
+    
+    # Store chat message in database
+    await store_chat_message(user.id, session.id, request.message, response)
+    
+    return {
+        "response": response, 
+        "mcp_servers": mcp_servers,
+        "missing_credentials": missing_credentials
+    }
+
+async def analyze_with_claude(message):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01"},
+            json={
+                "model": "claude-2",
+                "max_tokens": 1000,
+                "messages": [{"role": "user", "content": f"Analyze this workflow: {message}"}]
+            }
+        )
+        return response.json()["content"]
+
+async def identify_mcp_servers(analysis):
+    # Simple logic to identify MCP servers based on analysis
+    # This will be expanded in future versions
+    return []
+
+async def check_missing_credentials(user_id, mcp_servers):
+    # Check which credentials the user is missing for the identified MCP servers
+    missing = []
+    for server in mcp_servers:
+        has_creds = await check_user_has_credentials(user_id, server['id'])
+        if not has_creds:
+            missing.append(server['id'])
+    return missing
+
+async def generate_response(analysis, mcp_servers, missing_credentials):
+    # Generate simple response based on analysis and missing credentials
+    if missing_credentials:
+        return "To complete this workflow, you'll need to provide credentials for the following services: " + \
+               ", ".join([server['name'] for server in mcp_servers if server['id'] in missing_credentials])
+    else:
+        return "I can help you with this workflow. Here's what you need to do next..."
+
+async def store_chat_message(user_id, session_id, message, response):
+    # Store message in database
+    supabase.table("chat_messages").insert({
+        "user_id": user_id,
+        "session_id": session_id,
+        "content": message,
+        "response": response
+    }).execute()
+```
+
+# Test Strategy:
+1. Test chat endpoint with various workflow requests
+2. Verify MCP server identification logic
+3. Test missing credentials detection
+4. Ensure chat messages are correctly stored in database
+5. Test error handling for invalid sessions or requests
+
+# Subtasks:
+## 1. Implement Basic Chat Endpoint [done]
+### Dependencies: None
+### Description: Create a simple POST /api/chat endpoint that accepts user messages and returns responses.
+### Details:
+Implement the endpoint in main.py with proper request validation, authentication, and basic error handling. The endpoint should accept a message and session_id and return a response.
+<info added on 2025-05-28T08:31:46.438Z>
+Extend the endpoint to support file uploads. The chat endpoint should accept optional file attachments along with the message and session_id. Implement multipart form handling to process uploaded files, validate file types and sizes, and include file content in the request to the AI service. Ensure proper error handling for file-related issues such as invalid formats or upload failures.
+</info added on 2025-05-28T08:31:46.438Z>
+<info added on 2025-05-28T08:39:07.303Z>
+Update the ChatRequest model in the endpoint implementation to include an optional credentials field that can store authentication information for external services. The model should now have the following structure:
+
+```python
+class ChatRequest(BaseModel):
+    message: str
+    session_id: str
+    credentials: Optional[Dict[str, Dict[str, str]]] = None
+    files: Optional[List[UploadFile]] = None
+```
+
+This allows the chat endpoint to receive and process service credentials when needed, enabling authenticated interactions with external APIs while maintaining backward compatibility with existing requests.
+</info added on 2025-05-28T08:39:07.303Z>
+
+## 2. Integrate Claude AI for Message Analysis [done]
+### Dependencies: 6.1
+### Description: Connect to Claude AI to analyze user messages and identify workflow requirements.
+### Details:
+Create a function to send user messages to Claude AI and parse the response. Focus on extracting key workflow elements that can help identify required MCP servers.
+
+## 3. Implement MCP Server Identification [done]
+### Dependencies: 6.2
+### Description: Create logic to identify relevant MCP servers based on Claude's analysis.
+### Details:
+Develop a simple mechanism to map Claude's analysis to specific MCP servers. For the MVP, this can be a basic pattern matching approach rather than complex vector search.
+<info added on 2025-05-28T08:28:29.841Z>
+Implement vector search functionality to match Claude's analysis with relevant MCP servers. Use the embedding generated from Claude's message analysis to query the mcp_servers table using the existing vector search function in our SQL schema. This approach will find semantically similar servers based on content rather than simple pattern matching. Ensure the search results are ranked by similarity score and include a relevance threshold to filter out low-quality matches.
+</info added on 2025-05-28T08:28:29.841Z>
+
+## 4. Add Missing Credentials Check [done]
+### Dependencies: 6.3
+### Description: Check if the user has the necessary credentials for identified MCP servers.
+### Details:
+Query the user's stored credentials and compare against the required MCP servers to identify any missing credentials that need to be provided.
+
+## 5. Implement Response Generation [done]
+### Dependencies: 6.4
+### Description: Generate appropriate responses based on analysis and credential status.
+### Details:
+Create response logic that informs users about required credentials or provides next steps for their workflow. Keep responses simple and actionable for the MVP.
+<info added on 2025-05-28T08:39:19.641Z>
+The response format should follow this JSON structure:
+```json
+{
+  "reply": "String containing the AI's response message",
+  "session_id": "Unique session identifier",
+  "required_credentials": ["Array of missing credential names, if any"],
+  "status": "Current status (pending_credentials, success, etc.)",
+  "agent_created": true/false,
+  "agent_id": "ID of created agent (only included if agent_created is true)"
+}
+```
+
+Ensure all response logic properly populates these fields, especially the required_credentials array when users are missing necessary API keys or authentication. The status field should accurately reflect the current state of the user's workflow.
+</info added on 2025-05-28T08:39:19.641Z>
+
+## 6. Add Message Storage [done]
+### Dependencies: 6.5
+### Description: Save user messages and system responses to the database.
+### Details:
+Implement database storage for chat messages, including user ID, session ID, message content, and system response.
+

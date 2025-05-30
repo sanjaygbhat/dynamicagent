@@ -1,0 +1,152 @@
+# Task ID: 12
+# Title: Create Project README.md Documentation
+# Status: done
+# Dependencies: 11
+# Priority: low
+# Description: Create a comprehensive README.md file that includes project overview, setup instructions, running instructions, API documentation, and example usage.
+# Details:
+Create a well-structured README.md file at the root of the project with the following sections:
+
+1. **Project Overview**
+   - Brief description of the project's purpose and functionality
+   - Key features and technologies used (FastAPI, Supabase, etc.)
+   - Project architecture overview (if applicable)
+
+2. **Setup Instructions**
+   - Prerequisites (Python version, etc.)
+   - Environment setup:
+     - How to clone the repository
+     - How to install dependencies (`pip install -r requirements.txt`)
+     - Required environment variables (reference the .env.example file)
+   - Configuration options
+
+3. **Running the Application**
+   - Development server instructions (`uvicorn main:app --reload`)
+   - Production deployment considerations
+   - Available command-line options
+
+4. **API Documentation**
+   - Document all available endpoints
+   - Include HTTP methods, URL paths, request parameters, and response formats
+   - Note that FastAPI's automatic documentation is available at `/docs` and `/redoc`
+   - Include information about error handling and status codes
+
+5. **Example Usage**
+   - Code snippets showing how to interact with the API
+   - cURL examples for key endpoints
+   - Sample request/response pairs
+
+Format the README.md with proper Markdown syntax, including:
+- Headers and subheaders
+- Code blocks with syntax highlighting
+- Tables for structured information
+- Lists for sequential instructions
+- Links to relevant resources
+
+Example structure:
+```markdown
+# Project Name
+
+## Overview
+Brief description of the project...
+
+## Setup
+### Prerequisites
+- Python 3.8+
+- ...
+
+### Installation
+```bash
+git clone <repository-url>
+cd <project-directory>
+pip install -r requirements.txt
+```
+
+### Environment Variables
+Create a `.env` file with the following variables:
+...
+
+## Running the Application
+...
+
+## API Documentation
+...
+
+## Example Usage
+...
+```
+
+Ensure the README is clear, concise, and provides all necessary information for developers to understand, set up, and use the application.
+
+# Test Strategy:
+To verify the README.md file is complete and accurate:
+
+1. **Content Verification**:
+   - Confirm all required sections are present (overview, setup, running, API docs, examples)
+   - Verify that environment variables mentioned match those in the .env.example file
+   - Check that API endpoints documented match the actual implemented endpoints
+   - Ensure all dependencies listed in requirements.txt are mentioned in setup instructions
+
+2. **Technical Accuracy**:
+   - Test the setup instructions by following them on a clean environment
+   - Verify that the running instructions actually start the application correctly
+   - Test any example API calls to ensure they work as documented
+   - Confirm that error handling information matches the implementation in Task #11
+
+3. **Formatting and Readability**:
+   - Validate Markdown syntax using a Markdown linter
+   - Review the rendered README in a Markdown viewer (like GitHub's preview)
+   - Check for proper heading hierarchy, code block formatting, and table structure
+   - Ensure links are working correctly
+
+4. **Peer Review**:
+   - Have another team member follow the instructions to verify clarity
+   - Get feedback on completeness and understandability
+
+5. **Documentation Consistency**:
+   - Ensure terminology is consistent with the codebase
+   - Verify that API documentation aligns with the actual implementation
+   - Check that error codes and messages match those defined in the error handling system
+
+# Subtasks:
+## 1. Write project overview section [done]
+### Dependencies: None
+### Description: Create the introduction and overview of the project
+### Details:
+Write sections:
+- Project title and description
+- Key features (Google OAuth, MCP server identification, agent config generation)
+- Technologies used (FastAPI, Supabase, Claude AI, OpenAI)
+
+## 2. Document setup instructions [done]
+### Dependencies: 12.1
+### Description: Write detailed setup and installation steps
+### Details:
+Include:
+- Prerequisites (Python 3.8+)
+- Clone repository
+- Install dependencies (pip install -r requirements.txt)
+- Environment setup (copy .env.example to .env)
+- Supabase project setup
+
+## 3. Document API endpoints [done]
+### Dependencies: 12.2
+### Description: Create API documentation for all endpoints
+### Details:
+Document each endpoint:
+- POST /api/auth/google
+- POST /api/chat
+- GET /api/chat/history
+- POST /api/agent-config
+Include request/response formats and examples
+
+## 4. Add usage examples [done]
+### Dependencies: 12.3
+### Description: Provide example code and cURL commands
+### Details:
+Include:
+- cURL examples for authentication
+- Example chat workflow
+- Sample credential submission
+- Agent config generation example
+

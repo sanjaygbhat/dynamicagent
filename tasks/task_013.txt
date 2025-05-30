@@ -1,0 +1,37 @@
+# Task ID: 13
+# Title: Implement Agentic Conversation Flow
+# Status: done
+# Dependencies: 11
+# Priority: high
+# Description: Enhance chat endpoint to work as intelligent agent for credential collection
+# Details:
+The chat endpoint should guide users through credential collection step by step, only executing workflows when all credentials are ready
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Implement conversation state management [done]
+### Dependencies: None
+### Description: Track conversation state, required credentials, and collection progress
+### Details:
+
+
+## 2. Create intelligent credential collection flow [done]
+### Dependencies: None
+### Description: Ask for credentials one by one with clear explanations
+### Details:
+
+
+## 3. Implement workflow execution logic [done]
+### Dependencies: None
+### Description: Only execute workflows when all credentials are collected
+### Details:
+
+
+## 4. Refactor to use only server IDs for lookups [done]
+### Dependencies: None
+### Description: Remove all service name matching logic and use only direct server ID lookups across config.json, credinfo.json, and servers.json
+### Details:
+The system should only use server IDs from servers.json when looking up configuration in config.json and credential information in credinfo.json. Remove the identify_required_servers function that does keyword matching and replace it with direct ID-based lookup.
+

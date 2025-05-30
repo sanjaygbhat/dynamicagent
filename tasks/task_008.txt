@@ -1,0 +1,106 @@
+# Task ID: 8
+# Title: Implement Credential Management
+# Status: done
+# Dependencies: 6
+# Priority: high
+# Description: Create a system to collect, store, and validate credentials for identified MCP servers within the chat endpoint.
+# Details:
+For MVP, implement credential management directly in the chat endpoint:
+
+1. Modify the chat endpoint to accept credentials in the request body
+2. Store credentials in session's collected_credentials JSON field
+3. Implement simple validation to check if required fields are present
+4. Update credentials when provided in chat request
+
+Code snippet:
+```python
+from pydantic import BaseModel
+from typing import Optional
+
+class ChatRequest(BaseModel):
+    session_id: str
+    message: str
+    server_id: Optional[int] = None
+    credentials: Optional[dict] = None
+
+@app.post("/api/chat")
+async def chat(request: ChatRequest, user = Depends(get_current_user)):
+    # Verify session exists and belongs to user
+    session_response = supabase.table("sessions") \
+        .select("*") \
+        .eq("id", request.session_id) \
+        .eq("user_id", user.id) \
+        .execute()
+    
+    if not session_response.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    # Handle credentials if provided
+    if request.credentials and request.server_id:
+        # Verify MCP server exists
+        server_response = supabase.table("mcp_servers") \
+            .select("*") \
+            .eq("id", request.server_id) \
+            .execute()
+        
+        if not server_response.data:
+            raise HTTPException(status_code=404, detail="MCP server not found")
+        
+        server = server_response.data[0]
+        
+        # Simple validation that required fields are present
+        required_creds = server.get("credential_requirements", [])
+        missing_creds = [cred for cred in required_creds if cred not in request.credentials]
+        
+        if missing_creds:
+            return {"status": "incomplete", "missing_credentials": missing_creds}
+        
+        # Store credentials in session's collected_credentials JSON field
+        session_data = session_response.data[0]
+        collected_credentials = session_data.get("collected_credentials", {})
+        collected_credentials[str(request.server_id)] = request.credentials
+        
+        supabase.table("sessions") \
+            .update({"collected_credentials": collected_credentials}) \
+            .eq("id", request.session_id) \
+            .execute()
+    
+    # Continue with chat processing...
+    # [existing chat endpoint logic]
+    
+    return {"response": "Chat response here"}
+```
+
+# Test Strategy:
+1. Test credential storage with valid and invalid credentials via chat endpoint
+2. Verify credentials are stored in collected_credentials JSON field
+3. Test simple validation that required fields are present
+4. Ensure credentials are updated when provided in chat request
+5. Verify chat functionality works correctly with and without credential updates
+6. Test the response when credentials are missing, confirming it returns the list of missing credentials
+
+# Subtasks:
+## 8.1. Modify ChatRequest model to accept credentials [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 8.2. Implement credential validation in chat endpoint [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 8.3. Add credential storage in session's collected_credentials field [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 8.4. Test credential validation and storage functionality [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+

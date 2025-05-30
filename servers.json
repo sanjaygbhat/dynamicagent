@@ -155,64 +155,24 @@
     },
     {
       "id": "google-drive",
-      "name": "Google Drive",
-      "description": "File access and search capabilities for Google Drive. Allows you to search, read, upload, and manage files in your Google Drive storage.",
+      "name": "Google Drive MCP",
+      "type": "cloud_storage",
+      "description": "Official Google Drive MCP server from modelcontextprotocol that integrates with Google Drive to allow listing, reading, and searching over files. Supports all file types with automatic export for Google Workspace files (Docs → Markdown, Sheets → CSV, Presentations → Plain text, Drawings → PNG).",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-gdrive"],
       "tools": [
-        {
-          "name": "search_files",
-          "description": "Search for files in Google Drive",
-          "arguments": [
-            {
-              "name": "query",
-              "type": "string",
-              "required": true,
-              "description": "Search query for files (e.g., 'name contains \"report\"', 'mimeType=\"application/pdf\"')"
-            },
-            {
-              "name": "max_results",
-              "type": "number",
-              "required": false,
-              "description": "Maximum number of files to return (default: 10)"
-            }
-          ]
-        },
-        {
-          "name": "read_file",
-          "description": "Read the content of a file from Google Drive",
-          "arguments": [
-            {
-              "name": "file_id",
-              "type": "string",
-              "required": true,
-              "description": "The ID of the file to read"
-            }
-          ]
-        },
-        {
-          "name": "upload_file",
-          "description": "Upload a file to Google Drive",
-          "arguments": [
-            {
-              "name": "name",
-              "type": "string",
-              "required": true,
-              "description": "Name of the file"
-            },
-            {
-              "name": "content",
-              "type": "string",
-              "required": true,
-              "description": "File content"
-            },
-            {
-              "name": "parent_folder_id",
-              "type": "string",
-              "required": false,
-              "description": "ID of the parent folder (optional)"
-            }
-          ]
-        }
-      ]
+        "search",
+        "gdrive_read_file"
+      ],
+      "resources": [
+        "gdrive:///<file_id>"
+      ],
+      "automatic_conversions": {
+        "google_docs": "Markdown",
+        "google_sheets": "CSV", 
+        "google_presentations": "Plain text",
+        "google_drawings": "PNG"
+      }
     },
     {
       "id": "google-calendar",

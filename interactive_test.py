@@ -208,7 +208,7 @@ class InteractiveAgentTester:
             elif response.get('status') == 'completed':
                 print("\n✅ Workflow completed!")
                 break
-            elif response.get('status') == 'error'):
+            elif response.get('status') == 'error':
                 print("\n❌ Workflow execution failed.")
                 break
     
